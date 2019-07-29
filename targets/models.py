@@ -1,6 +1,10 @@
 from django.db import models
+from django.utils.timezone import make_aware
 from keymanager import models as kmModels
 import datetime as dt
+import time
+import pytz
+from factionstats import settings
 
 class Target(models.Model):
     added = models.DateTimeField(auto_now_add=True)
@@ -30,12 +34,57 @@ class Target(models.Model):
         else:
             return self.torn_id
 
-    def update_profile(self):
+    def update_profile(self, account, wait=settings.TORN_API_RATE):
         if self.status_updated:
-            if self.status_updated - dt.timedelta(minutes=10) > dt.datetime.now():
-                return 'Run query'
+            if (self.status_updated + dt.timedelta(minutes=settings.TORN_API_MIN_STATUS_DWELL_MINUTES)) < \
+                    dt.datetime.utcnow().replace(tzinfo=pytz.UTC):
+                try:
+                    tmpprofile = self.__get_profile__(account=account)
+                    for attr, value in tmpprofile.items():
+                        setattr(self, attr, value)
+                    self.save()
+                except kmModels.APINotReadyException:
+                    return False
+                time.sleep(wait)
+                return True
+            else:
+                return False
         else:
-            return 'Query first time'
+            tmpprofile = self.__get_profile__(account=account)
+
+            for attr, value in tmpprofile.items():
+                setattr(self, attr, value)
+            self.save()
+
+            time.sleep(wait)
+            return True
+
+    def __get_profile__(self, account):
+        tmpcall = account.__api_call__(endpoint='user/' + self.torn_id, selections='profile')
+        tmpprofile = tmpcall.json()
+        output = dict()
+
+        output['torn_name'] = tmpprofile.get('name')
+        try:
+            output['status'] = tmpprofile.get('status')[0]
+            output['status2'] = tmpprofile.get('status')[1]
+        except IndexError:
+            pass
+        output['life_current'] = tmpprofile.get('life').get('current')
+        output['life_max'] = tmpprofile.get('life').get('maximum')
+        output['status_updated'] = make_aware(dt.datetime.utcnow())
+        output['level'] = tmpprofile.get('level')
+        output['rank'] = tmpprofile.get('rank')
+        output['gender'] = tmpprofile.get('gender')
+        output['signup'] = tmpprofile.get('signup')
+        output['forum_posts'] = tmpprofile.get('forum_posts')
+        output['karma'] = tmpprofile.get('karma')
+        output['age'] = tmpprofile.get('age')
+        output['role'] = tmpprofile.get('role')
+        output['donator'] = tmpprofile.get('donator')
+        output['property'] = tmpprofile.get('property_id')
+        output['last_action'] = tmpprofile.get('last_action').get('timestamp')
+        return output
 
 
 class SpyReport(models.Model):
