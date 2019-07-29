@@ -78,8 +78,12 @@ WSGI_APPLICATION = 'factionstats.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'fstats',
+        'USER': 'fstats',
+        'PASSWORD': 'fstats',
+        'HOST': 's02.n1029.com',
+        'PORT': '32768',
     }
 }
 
@@ -122,5 +126,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-TORN_API_RATE = 60/10  # Maximum of 10 requests per 60 seconds per api_key
+TORN_API_RATE = 60/60  # xx/yy Maximum of yy requests per xx seconds
 TORN_API_BASE_URL = """https://api.torn.com/"""
+TORN_API_MIN_STATUS_DWELL_MINUTES = 5
