@@ -129,3 +129,4 @@ STATIC_URL = '/static/'
 TORN_API_RATE = 60/60  # xx/yy Maximum of yy requests per xx seconds
 TORN_API_BASE_URL = """https://api.torn.com/"""
 TORN_API_MIN_STATUS_DWELL_MINUTES = 5
+TORN_API_MAX_TARGET_RETURN = 30

@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils.timezone import make_aware
 from keymanager import models as kmModels
 import datetime as dt
@@ -24,9 +26,23 @@ class Target(models.Model):
     age = models.IntegerField(blank=True, null=True)
     role = models.CharField(max_length=32, blank=True, null=True)
     donator = models.BooleanField(blank=True, null=True)
-    property = models.IntegerField(blank=True, null=True)
+    property_id = models.IntegerField(blank=True, null=True)
     last_action = models.BigIntegerField(blank=True, null=True)
     spouse = models.IntegerField(blank=True, null=True)
+
+    @property
+    def status_updated_relative(self):
+        diffseconds = (dt.datetime.utcnow().replace(tzinfo=pytz.UTC) - self.status_updated).total_seconds()
+        if diffseconds is None:
+            return None
+        elif diffseconds < 60:
+            return f"{int(diffseconds)} sec"
+        elif diffseconds < 3600:
+            return f"{int(diffseconds/60)} min"
+        elif diffseconds < 86400:
+            return f"{int(diffseconds/60/60)} hr"
+        else:
+            return f"{int(diffseconds/60/60/24)} day"
 
     def __str__(self):
         if self.torn_name:
@@ -92,8 +108,19 @@ class SpyReport(models.Model):
     date_spied = models.DateTimeField(null=True, blank=True)
     torn_id = models.ForeignKey(Target, on_delete=models.CASCADE)
     spy = models.ForeignKey(kmModels.Account, on_delete=models.PROTECT, blank=True, null=True)
+    level = models.IntegerField(blank=True)
     strength = models.FloatField(blank=True)
     defense = models.FloatField(blank=True)
     speed = models.FloatField(blank=True)
     dexterity = models.FloatField(blank=True)
     total = models.FloatField(blank=True)
+    archived = models.BooleanField(default=False)
+
+    def mark_archived(self):
+        self.archived = True
+
+
+@receiver(post_save, sender=SpyReport)
+def mark_previous_reports_as_archived(sender, instance, created, **kwargs):
+    if created:
+        SpyReport.objects.filter(torn_id=instance.torn_id, archived=False).exclude(pk=instance.pk).update(archived=True)

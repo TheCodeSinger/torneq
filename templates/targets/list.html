@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.css">
+
+    <title>Title</title>
+</head>
+<body>
+<div class="container">
+
+    <div class="table-responsive table-striped table-bordered table-sm">
+        <table class="table" data-toggle="table" data-sort-name="total" data-sort-order="asc">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Age</th>
+                <th data-sortable="true">Level</th>
+                <th>Status</th>
+                <th data-sortable="true" data-field="total">Total</th>
+                <th data-sortable="true">Strength</th>
+                <th data-sortable="true">Defense</th>
+                <th data-sortable="true">Speed</th>
+                <th data-sortable="true">Dexterity</th>
+                <th>Updated</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for spy_report in spy_reports %}
+              <tr>
+                <td><a href="https://www.torn.com/profiles.php?XID={{ spy_report.torn_id_id }}">{{ spy_report.torn_id.torn_name }}</a></td>
+                <td>{{ spy_report.torn_id.age }}</td>
+                <td>{{ spy_report.torn_id.level }}</td>
+                <td>{{ spy_report.torn_id.status }}</td>
+                <td>{{ spy_report.total }}</td>
+                <td>{{ spy_report.strength }}</td>
+                <td>{{ spy_report.defense }}</td>
+                <td>{{ spy_report.speed }}</td>
+                <td>{{ spy_report.dexterity }}</td>
+                <td>{{ spy_report.torn_id.status_updated_relative }}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.js"></script>
+</body>
+</html>
