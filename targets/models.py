@@ -2,18 +2,41 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.timezone import make_aware
+from factionstats import celery
 from keymanager import models as kmModels
 import datetime as dt
 import time
 import pytz
 from factionstats import settings
 
+
+def relative_time(utcdatetime):
+    diffseconds = (dt.datetime.utcnow().replace(tzinfo=pytz.UTC) - utcdatetime).total_seconds()
+    if diffseconds is None:
+        return None
+    elif diffseconds == 1:
+        return f"{int(diffseconds)} sec"
+    elif diffseconds < 60:
+        return f"{int(diffseconds)} secs"
+    elif diffseconds <= 119:
+        return f"{int(diffseconds / 60)} min"
+    elif diffseconds < 3600:
+        return f"{int(diffseconds / 60)} mins"
+    elif diffseconds <= 7199:
+        return f"{int(diffseconds / 60 / 60)} hr"
+    elif diffseconds < 86400:
+        return f"{int(diffseconds / 60 / 60)} hrs"
+    elif diffseconds <= 172799:
+        return f"{int(diffseconds / 60 / 60 / 24)} day"
+    else:
+        return f"{int(diffseconds / 60 / 60 / 24)} days"
+
 class Target(models.Model):
     added = models.DateTimeField(auto_now_add=True)
     torn_id = models.CharField(max_length=16, primary_key=True)
     torn_name = models.CharField(max_length=32, blank=True, null=True)
-    status = models.CharField(max_length=64, blank=True, null=True)
-    status2 = models.CharField(max_length=64, blank=True, null=True)
+    status = models.CharField(max_length=128, blank=True, null=True)
+    status2 = models.CharField(max_length=128, blank=True, null=True)
     life_current = models.IntegerField(blank=True, null=True)
     life_max = models.IntegerField(blank=True, null=True)
     status_updated = models.DateTimeField(null=True, blank=True)
@@ -32,17 +55,12 @@ class Target(models.Model):
 
     @property
     def status_updated_relative(self):
-        diffseconds = (dt.datetime.utcnow().replace(tzinfo=pytz.UTC) - self.status_updated).total_seconds()
-        if diffseconds is None:
-            return None
-        elif diffseconds < 60:
-            return f"{int(diffseconds)} sec"
-        elif diffseconds < 3600:
-            return f"{int(diffseconds/60)} min"
-        elif diffseconds < 86400:
-            return f"{int(diffseconds/60/60)} hr"
-        else:
-            return f"{int(diffseconds/60/60/24)} day"
+        return relative_time(self.status_updated)
+
+
+    @property
+    def last_action_relative(self):
+        return relative_time(dt.datetime.utcfromtimestamp(self.last_action).replace(tzinfo=pytz.UTC))
 
     def __str__(self):
         if self.torn_name:
@@ -120,7 +138,44 @@ class SpyReport(models.Model):
         self.archived = True
 
 
-@receiver(post_save, sender=SpyReport)
+# @receiver(post_save, sender=SpyReport)
 def mark_previous_reports_as_archived(sender, instance, created, **kwargs):
     if created:
         SpyReport.objects.filter(torn_id=instance.torn_id, archived=False).exclude(pk=instance.pk).update(archived=True)
+
+
+@celery.app.task
+def update_profile_job(target_pk, account_pk, wait=settings.TORN_API_RATE):
+    target = Target.objects.get(pk=target_pk)
+    account = kmModels.Account.objects.get(pk=account_pk)
+    if target.status_updated:
+        if (target.status_updated + dt.timedelta(minutes=settings.TORN_API_MIN_STATUS_DWELL_MINUTES)) < \
+                dt.datetime.utcnow().replace(tzinfo=pytz.UTC):
+            try:
+                tmpprofile = target.__get_profile__(account=account)
+                for attr, value in tmpprofile.items():
+                    setattr(target, attr, value)
+                target.save()
+            except kmModels.APINotReadyException:
+                return False
+            time.sleep(wait)
+            return {
+                'status': target.status,
+                'life_current': target.life_current,
+                'last_action': target.last_action_relative,
+            }
+        else:
+            return False
+    else:
+        tmpprofile = target.__get_profile__(account=account)
+
+        for attr, value in tmpprofile.items():
+            setattr(target, attr, value)
+        target.save()
+
+        time.sleep(wait)
+        return {
+                'status': target.status,
+                'life_current': target.life_current,
+                'last_action': target.last_action_relative,
+            }

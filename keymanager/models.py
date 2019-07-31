@@ -35,8 +35,8 @@ class Account(models.Model):
     def __str__(self):
         return self.torn_id
 
-    def __api_call__(self, endpoint, selections):
-        if self.api_ready:
+    def __api_call__(self, endpoint, selections, override=False):
+        if self.api_ready or override:
             results = requests.get(url=f"""{settings.TORN_API_BASE_URL}{endpoint}?selections={selections}&key={self.api_key}""")
             APILog(
                 originating_ip=socket.gethostname(),
@@ -63,7 +63,7 @@ class Account(models.Model):
         """
         if self.api_key is not None:
             if len(self.api_key) > 10:
-                request = self.__api_call__(endpoint='user', selections='timestamp')
+                request = self.__api_call__(endpoint='user', selections='timestamp', override=True)
                 if request.json().get('error'):
                     self.api_status = f"""Error: {request.json().get('error').get('error')}"""
                     self.api_ready = False

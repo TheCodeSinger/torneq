@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'keymanager.apps.KeymanagerConfig',
     'targets.apps.TargetsConfig',
+    'django_celery_results',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -125,6 +126,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+CELERY_RESULT_BACKEND = 'django-db'
 
 TORN_API_RATE = 60/60  # xx/yy Maximum of yy requests per xx seconds
 TORN_API_BASE_URL = """https://api.torn.com/"""

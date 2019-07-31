@@ -19,6 +19,7 @@
               <tr>
                 <th>Name</th>
                 <th>Age</th>
+                <th data-sortable="true">Last Action</th>
                 <th data-sortable="true">Level</th>
                 <th>Status</th>
                 <th data-sortable="true" data-field="total">Total</th>
@@ -34,6 +35,7 @@
               <tr>
                 <td><a href="https://www.torn.com/profiles.php?XID={{ spy_report.torn_id_id }}">{{ spy_report.torn_id.torn_name }}</a></td>
                 <td>{{ spy_report.torn_id.age }}</td>
+                <td>{{ spy_report.torn_id.last_action_relative }}</td>
                 <td>{{ spy_report.torn_id.level }}</td>
                 <td>{{ spy_report.torn_id.status }}</td>
                 <td>{{ spy_report.total }}</td>
