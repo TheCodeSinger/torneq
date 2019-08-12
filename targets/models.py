@@ -157,15 +157,11 @@ def update_profile_job(target_pk, account_pk, wait=settings.TORN_API_RATE):
                     setattr(target, attr, value)
                 target.save()
             except kmModels.APINotReadyException:
-                return False
+                pass
             time.sleep(wait)
-            return {
-                'status': target.status,
-                'life_current': target.life_current,
-                'last_action': target.last_action_relative,
-            }
-        else:
-            return False
+
+
+
     else:
         tmpprofile = target.__get_profile__(account=account)
 
@@ -174,8 +170,33 @@ def update_profile_job(target_pk, account_pk, wait=settings.TORN_API_RATE):
         target.save()
 
         time.sleep(wait)
-        return {
-                'status': target.status,
-                'life_current': target.life_current,
-                'last_action': target.last_action_relative,
-            }
+
+    spyrep = target.spyreport_set.filter(archived=False).last()
+
+    results = {
+        'age': target.age,
+        'level': target.level,
+        'life_current': target.life_current,
+        'life_max': target.life_max,
+        'rank': target.rank,
+        'status': target.status,
+        'status2': target.status2,
+        'torn_id': target.torn_id,
+        'torn_name': target.torn_name,
+        'last_action_relative': target.last_action_relative,
+    }
+
+    if spyrep:
+        results['defense'] = spyrep.defense
+        results['dexterity'] = spyrep.dexterity
+        results['speed'] = spyrep.speed
+        results['strength'] = spyrep.strength
+        results['total'] = spyrep.total
+    else:
+        results['defense'] = None
+        results['dexterity'] = None
+        results['speed'] = None
+        results['strength'] = None
+        results['total'] = None
+
+    return results
