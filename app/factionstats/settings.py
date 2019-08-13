@@ -25,7 +25,7 @@ SECRET_KEY = '2k2%f^@98xjqfi1e-%itu9r4^_%p4@6nkb$(d7@b#l6-uga3q_'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['desktop-tr98gej']
 
 
 # Application definition
