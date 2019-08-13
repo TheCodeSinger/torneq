@@ -20,12 +20,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '2k2%f^@98xjqfi1e-%itu9r4^_%p4@6nkb$(d7@b#l6-uga3q_'
+SECRET_KEY = os.environ.get('SECRET_KEY', default='2k2%f^@98xjqfi1e-%itu9r4^_%p4@6nkb$(d7@b#l6-uga3q_')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = int(os.environ.get('DEBUG', default=0))
 
-ALLOWED_HOSTS = ['desktop-tr98gej']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -79,12 +79,12 @@ WSGI_APPLICATION = 'factionstats.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'fstats',
-        'USER': 'fstats',
-        'PASSWORD': 'fstats',
-        'HOST': 's02.n1029.com',
-        'PORT': '32768',
+        'ENGINE': os.environ.get('SQL_ENGINE', 'django.db.backends.postgresql'),
+        'NAME': os.environ.get('SQL_DATABASE', 'fstats'),
+        'USER': os.environ.get('SQL_USER', 'fstats'),
+        'PASSWORD': os.environ.get('SQL_PASSWORD', 'fstats'),
+        'HOST': os.environ.get('SQL_HOST', 's02.n1029.com'),
+        'PORT': os.environ.get('SQL_PORT', '32768'),
     }
 }
 
@@ -125,7 +125,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/staticfiles/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+MEDIA_URL = '/mediafiles/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles')
 
 CELERY_RESULT_BACKEND = 'django-db'
 
