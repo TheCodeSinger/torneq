@@ -24,6 +24,7 @@ RUN pip install -r requirements.txt
 FROM foundation AS sourcecode
 # copy entrypoint-prod.sh
 COPY ./entrypoint.prod.sh /usr/src/app/entrypoint.prod.sh
+RUN chmod +x /usr/src/app/entrypoint.prod.sh
 
 # copy project
 COPY . /usr/src/app/
