@@ -184,6 +184,7 @@ def update_profile_job(target_pk, account_pk, wait=settings.TORN_API_RATE):
         'torn_id': target.torn_id,
         'torn_name': target.torn_name,
         'last_action_relative': target.last_action_relative,
+        'refreshed': target.status_updated_relative,
     }
 
     if spyrep:

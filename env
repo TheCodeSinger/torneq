@@ -1,0 +1,15 @@
+DEBUG=0
+SECRET_KEY=2k2%f^@98xjqfi1e-%itu9r4^_%p4@6nkb$(d7@b#l6-uga3q_
+SQL_ENGINE=django.db.backends.postgresql
+SQL_DATABASE=fstats
+SQL_USER=fstats
+SQL_PASSWORD=fstats
+SQL_HOST=db
+SQL_PORT=5432
+DATABASE=postgres
+
+REDIS_URI=redis://redis:6379
+
+API_MIN_STATUS_DWELL_MINUTES=1
+API_MAX_TARGET_RETURN=30
+API_RATE=1

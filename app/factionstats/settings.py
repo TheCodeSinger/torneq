@@ -20,12 +20,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '2k2%f^@98xjqfi1e-%itu9r4^_%p4@6nkb$(d7@b#l6-uga3q_'
+SECRET_KEY = os.environ.get('SECRET_KEY', default='2k2%f^@98xjqfi1e-%itu9r4^_%p4@6nkb$(d7@b#l6-uga3q_')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = int(os.environ.get('DEBUG', default=1))
 
-ALLOWED_HOSTS = ['desktop-tr98gej']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -79,12 +79,12 @@ WSGI_APPLICATION = 'factionstats.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'fstats',
-        'USER': 'fstats',
-        'PASSWORD': 'fstats',
-        'HOST': 's02.n1029.com',
-        'PORT': '32768',
+        'ENGINE': os.environ.get('SQL_ENGINE', 'django.db.backends.postgresql'),
+        'NAME': os.environ.get('SQL_DATABASE'),
+        'USER': os.environ.get('SQL_USER'),
+        'PASSWORD': os.environ.get('SQL_PASSWORD'),
+        'HOST': os.environ.get('SQL_HOST'),
+        'PORT': os.environ.get('SQL_PORT'),
     }
 }
 
@@ -125,11 +125,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/staticfiles/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+MEDIA_URL = '/mediafiles/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles')
 
 CELERY_RESULT_BACKEND = 'django-db'
 
-TORN_API_RATE = 60/60  # xx/yy Maximum of yy requests per xx seconds
+TORN_API_RATE = int(os.environ.get('API_RATE', default=1))  # xx/yy Maximum of yy requests per xx seconds
 TORN_API_BASE_URL = """https://api.torn.com/"""
-TORN_API_MIN_STATUS_DWELL_MINUTES = 5
-TORN_API_MAX_TARGET_RETURN = 30
+TORN_API_MIN_STATUS_DWELL_MINUTES = int(os.environ.get('API_MIN_STATUS_DWELL_MINUTES', default=5))
+TORN_API_MAX_TARGET_RETURN = int(os.environ.get('API_MAX_TARGET_RETURN', default=30))
