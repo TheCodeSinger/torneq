@@ -4,7 +4,7 @@ services:
   web:
     build:
       context: ./app
-      dockerfile: Dockerfile.prod
+      dockerfile: Dockerfile
     image: &img webimg
     command: gunicorn factionstats.wsgi:application --bind 0.0.0.0:8000
     volumes:
