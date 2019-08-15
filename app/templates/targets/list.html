@@ -31,19 +31,19 @@
               </tr>
             </thead>
             <tbody>
-            {% for spy_report in spy_reports %}
+            {% for target in targets %}
               <tr>
-                <td><a href="https://www.torn.com/profiles.php?XID={{ spy_report.torn_id_id }}">{{ spy_report.torn_id.torn_name }}</a></td>
-                <td>{{ spy_report.torn_id.age }}</td>
-                <td>{{ spy_report.torn_id.last_action_relative }}</td>
-                <td>{{ spy_report.torn_id.level }}</td>
-                <td>{{ spy_report.torn_id.status }}</td>
-                <td>{{ spy_report.total }}</td>
-                <td>{{ spy_report.strength }}</td>
-                <td>{{ spy_report.defense }}</td>
-                <td>{{ spy_report.speed }}</td>
-                <td>{{ spy_report.dexterity }}</td>
-                <td>{{ spy_report.torn_id.status_updated_relative }}</td>
+                <td><a href="https://www.torn.com/profiles.php?XID={{ target.torn_id }}">{{ target.torn_name }}</a></td>
+                <td>{{ target.age }}</td>
+                <td>{{ target.last_action_relative }}</td>
+                <td>{{ target.level }}</td>
+                <td>{{ target.status }}</td>
+                <td>{{ target.total }}</td>
+                <td>{{ target.strength }}</td>
+                <td>{{ target.defense }}</td>
+                <td>{{ target.speed }}</td>
+                <td>{{ target.dexterity }}</td>
+                <td>{{ target.refreshed }}</td>
               </tr>
             {% endfor %}
             </tbody>
