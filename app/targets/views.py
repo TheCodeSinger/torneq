@@ -17,7 +17,7 @@ def _async_stat_updates_(minStats: int, targetCount: int = 8):
         tmpjobs.append(
             tmodels.update_profile_job.s(target_pk=report.torn_id_id, account_pk=accounts[index % len(accounts)].pk))
     batchresult = group(tmpjobs).apply_async()
-    return batchresult
+    return batchresult.join()
 
 
 def targets_json_async(request):
@@ -32,7 +32,7 @@ def targets_json_async(request):
         targetCount = 8
 
     results = _async_stat_updates_(minStats=minStats, targetCount=targetCount)
-    return JsonResponse({'targets': results.join()}, json_dumps_params={'indent': 2})
+    return JsonResponse({'targets': results}, json_dumps_params={'indent': 2})
 
 
 def targets_pretty(request, minStats=100):
@@ -42,4 +42,4 @@ def targets_pretty(request, minStats=100):
         minStats = 100
 
     results = _async_stat_updates_(minStats=minStats)
-    return render(request, 'targets/list.html', {'targets': results.join()})
+    return render(request, 'targets/list.html', {'targets': results})
