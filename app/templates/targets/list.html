@@ -12,6 +12,14 @@
 </head>
 <body>
 <div class="container">
+    <form action="/targets/view" method="get">
+        <div class="form-group">
+            <label for="minStats">Minimum Stats (Total)</label>
+            <input type="number" class="form-control" id="minStats" name="minStats" placeholder="1000" value="{{ minStats }}">
+        </div>
+        <button type="submit" class="btn btn-primary mb-2">Get Targets</button>
+    </form>
+
 
     <div class="table-responsive table-striped table-bordered table-sm">
         <table class="table" data-toggle="table" data-sort-name="total" data-sort-order="asc">

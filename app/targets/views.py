@@ -35,11 +35,11 @@ def targets_json_async(request):
     return JsonResponse({'targets': results}, json_dumps_params={'indent': 2})
 
 
-def targets_pretty(request, minStats=100):
+def targets_pretty(request):
     try:
-        minStats = int(minStats)
+        minStats = int(request.GET.get('minStats', 100))
     except ValueError:
         minStats = 100
 
     results = _async_stat_updates_(minStats=minStats)
-    return render(request, 'targets/list.html', {'targets': results})
+    return render(request, 'targets/list.html', {'targets': results, 'minStats': minStats})
