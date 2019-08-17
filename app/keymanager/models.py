@@ -42,24 +42,32 @@ class Account(models.Model):
         return self.torn_id
 
     def __api_call__(self, endpoint, selections, override=False):
-        if self.api_ready or override:
-            results = requests.get(url=f"""{settings.TORN_API_BASE_URL}{endpoint}?selections={selections}&key={self.api_key}""")
-            APILog(
-                originating_ip=socket.gethostname(),
-                account=self,
-                key=self.api_key,
-                status_code=results.status_code,
-                url=results.request.url,
-                body=results.text,
-            ).save()
-            if results.json().get('error'):
+        try:
+            if self.api_ready or override:
+                results = requests.get(url=f"""{settings.TORN_API_BASE_URL}{endpoint}?selections={selections}&key={self.api_key}""")
+                APILog(
+                    originating_ip=socket.gethostname(),
+                    account=self,
+                    key=self.api_key,
+                    status_code=results.status_code,
+                    url=results.request.url,
+                    body=results.text,
+                ).save()
+                if results.json().get('error'):
+                    self.api_ready = False
+                    self.api_status = results.json().get('error').get('error')
+                    raise APINotReadyException('API Call resulted in error ' + results.json().get('error', {}).get('error'))
+            else:
+                raise APINotReadyException
+        except KeyManagerException as errobj:
+            if 'Incorrect key' in str(errobj):
                 self.api_ready = False
-                self.api_status = results.json().get('error').get('error')
-                raise APINotReadyException('API Call resulted in error ' + results.json().get('error').get('error'))
-        else:
-            raise APINotReadyException
+                self.api_status = 'Incorrect key'
+            else:
+                self.api_ready = False
+                self.api_status = 'UNK Error from API'
 
-        return results
+        return results or {}
 
     def test_key_validity(self):
         """
