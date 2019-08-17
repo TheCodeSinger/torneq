@@ -145,12 +145,12 @@ def mark_previous_reports_as_archived(sender, instance, created, **kwargs):
 
 
 @celery.app.task
-def update_profile_job(target_pk, account_pk, wait=settings.TORN_API_RATE):
+def update_profile_job(target_pk, account_pk, update=True, wait=settings.TORN_API_RATE):
     target = Target.objects.get(pk=target_pk)
     account = kmModels.Account.objects.get(pk=account_pk)
     if target.status_updated:
         if (target.status_updated + dt.timedelta(minutes=settings.TORN_API_MIN_STATUS_DWELL_MINUTES)) < \
-                dt.datetime.utcnow().replace(tzinfo=pytz.UTC):
+                dt.datetime.utcnow().replace(tzinfo=pytz.UTC) and update is True:
             try:
                 tmpprofile = target.__get_profile__(account=account)
                 for attr, value in tmpprofile.items():
