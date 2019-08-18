@@ -51,7 +51,7 @@
                 <td>{{ target.defense }}</td>
                 <td>{{ target.speed }}</td>
                 <td>{{ target.dexterity }}</td>
-                <td{% if target.status_updated_diff > 360 %} class="table-warning"{% endif %}>{{ target.refreshed }}</td>
+                <td{% if target.status_updated_diff > 360 %} class="table-warning"{% endif %}>{{ target.status_updated_relative }}</td>
               </tr>
             {% endfor %}
             </tbody>

@@ -32,9 +32,6 @@ def relative_time(utcdatetime):
         return f"{int(diffseconds / 60 / 60 / 24)} days"
 
 
-def relative_time_diff(utcdatetime):
-    return (dt.datetime.utcnow().replace(tzinfo=pytz.UTC) - utcdatetime).total_seconds()
-
 class Target(models.Model):
     added = models.DateTimeField(auto_now_add=True)
     torn_id = models.CharField(max_length=16, primary_key=True)
@@ -63,7 +60,7 @@ class Target(models.Model):
 
     @property
     def status_updated_diff(self):
-        return relative_time_diff(dt.datetime.utcfromtimestamp(self.last_action).replace(tzinfo=pytz.UTC))
+        return (time.time() - self.status_updated.timestamp())
 
     @property
     def last_action_relative(self):
@@ -197,7 +194,7 @@ def update_profile_job(target_pk, account_pk, update=True, wait=settings.TORN_AP
         'torn_name': target.torn_name,
         'last_action_relative': target.last_action_relative,
         'last_action_diff': target.last_action_diff,
-        'refreshed': target.status_updated_relative,
+        'status_updated_relative': target.status_updated_relative,
         'status_updated_diff': target.status_updated_diff,
     }
 
