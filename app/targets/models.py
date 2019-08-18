@@ -31,6 +31,10 @@ def relative_time(utcdatetime):
     else:
         return f"{int(diffseconds / 60 / 60 / 24)} days"
 
+
+def relative_time_diff(utcdatetime):
+    return (dt.datetime.utcnow().replace(tzinfo=pytz.UTC) - utcdatetime).total_seconds()
+
 class Target(models.Model):
     added = models.DateTimeField(auto_now_add=True)
     torn_id = models.CharField(max_length=16, primary_key=True)
@@ -57,6 +61,9 @@ class Target(models.Model):
     def status_updated_relative(self):
         return relative_time(self.status_updated)
 
+    @property
+    def status_updated_diff(self):
+        return relative_time_diff(dt.datetime.utcfromtimestamp(self.last_action).replace(tzinfo=pytz.UTC))
 
     @property
     def last_action_relative(self):
@@ -67,6 +74,11 @@ class Target(models.Model):
             return self.torn_name + " " + self.torn_id
         else:
             return self.torn_id
+
+
+    @property
+    def last_action_diff(self):
+        return time.time() - self.last_action
 
     def update_profile(self, account, wait=settings.TORN_API_RATE):
         if self.status_updated:
@@ -184,7 +196,9 @@ def update_profile_job(target_pk, account_pk, update=True, wait=settings.TORN_AP
         'torn_id': target.torn_id,
         'torn_name': target.torn_name,
         'last_action_relative': target.last_action_relative,
+        'last_action_diff': target.last_action_diff,
         'refreshed': target.status_updated_relative,
+        'status_updated_diff': target.status_updated_diff,
     }
 
     if spyrep:
