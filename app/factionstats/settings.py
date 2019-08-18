@@ -137,3 +137,4 @@ TORN_API_RATE = int(os.environ.get('API_RATE', default=1))  # xx/yy Maximum of y
 TORN_API_BASE_URL = """https://api.torn.com/"""
 TORN_API_MIN_STATUS_DWELL_MINUTES = int(os.environ.get('API_MIN_STATUS_DWELL_MINUTES', default=5))
 TORN_API_MAX_TARGET_RETURN = int(os.environ.get('API_MAX_TARGET_RETURN', default=30))
+TORN_API_UNAUTHD_UPDATES = bool(os.environ.get('API_UNAUTHD_UPDATES', default=False))

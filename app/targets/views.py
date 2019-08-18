@@ -12,7 +12,8 @@ def _async_stat_updates_(req, minStats: int, targetCount: int = 8):
                       .order_by('total', '-date_spied') \
                       .select_related('torn_id')[:min(targetCount, settings.TORN_API_MAX_TARGET_RETURN)]
     tmpjobs = list()
-    update_permissions = req.user.has_perm('keymanager.generate_updates') or \
+    update_permissions = settings.TORN_API_UNAUTHD_UPDATES or \
+                         req.user.has_perm('keymanager.generate_updates') or \
                          req.user.has_perm('keymanager.generate_updates_override')
     for index, report in enumerate(spy_reports):
         tmpjobs.append(
