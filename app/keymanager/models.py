@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
+from django.contrib.auth.models import User, Permission
 import datetime
 import requests
 import socket
@@ -28,32 +29,45 @@ class Account(models.Model):
     api_status = models.CharField(max_length=32, default='Untested', db_index=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    fsuser_id = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     objects = models.Manager()
     next_key = NextKeyManager()
+
+    class Meta:
+        permissions = [('generate_updates', 'Can cause target updates'),
+                       ('generate_updates_override', 'Will always trigger target updates')]
 
     def __str__(self):
         return self.torn_id
 
     def __api_call__(self, endpoint, selections, override=False):
-        if self.api_ready or override:
-            results = requests.get(url=f"""{settings.TORN_API_BASE_URL}{endpoint}?selections={selections}&key={self.api_key}""")
-            APILog(
-                originating_ip=socket.gethostname(),
-                account=self,
-                key=self.api_key,
-                status_code=results.status_code,
-                url=results.request.url,
-                body=results.text,
-            ).save()
-            if results.json().get('error'):
+        try:
+            if self.api_ready or override:
+                results = requests.get(url=f"""{settings.TORN_API_BASE_URL}{endpoint}?selections={selections}&key={self.api_key}""")
+                APILog(
+                    originating_ip=socket.gethostname(),
+                    account=self,
+                    key=self.api_key,
+                    status_code=results.status_code,
+                    url=results.request.url,
+                    body=results.text,
+                ).save()
+                if results.json().get('error'):
+                    self.api_ready = False
+                    self.api_status = results.json().get('error').get('error')
+                    raise APINotReadyException('API Call resulted in error ' + results.json().get('error', {}).get('error'))
+            else:
+                raise APINotReadyException
+        except KeyManagerException as errobj:
+            if 'Incorrect key' in str(errobj):
                 self.api_ready = False
-                self.api_status = results.json().get('error').get('error')
-                raise APINotReadyException('API Call resulted in error ' + results.json().get('error').get('error'))
-        else:
-            raise APINotReadyException
+                self.api_status = 'Incorrect key'
+            else:
+                self.api_ready = False
+                self.api_status = 'UNK Error from API'
 
-        return results
+        return results or {}
 
     def test_key_validity(self):
         """
@@ -96,4 +110,14 @@ class APILog(models.Model):
 
 @receiver(pre_save, sender=Account)
 def test_key_on_save(sender, instance, **kwargs):
-    instance.test_key_validity()
+    can_generate_updates_perm = Permission.objects.get(codename='generate_updates')
+    requser = instance.fsuser_id
+    valid_key = instance.test_key_validity()
+    if valid_key:
+        if instance.fsuser_id is not None:
+            requser.user_permissions.add(can_generate_updates_perm)
+    else:
+        requser.user_permissions.remove(can_generate_updates_perm)
+    requser.save()
+
+
