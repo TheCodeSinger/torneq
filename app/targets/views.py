@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from django.http import JsonResponse
 from factionstats import settings
 from . import models as tmodels
@@ -43,13 +42,3 @@ def targets_json_async(request):
 
     results = _async_stat_updates_(req=request, minStats=minStats, maxStats=maxStats, targetCount=targetCount)
     return JsonResponse({'targets': results}, json_dumps_params={'indent': 2})
-
-
-def targets_pretty(request):
-    try:
-        minStats = int(request.GET.get('minStats', 100))
-    except ValueError:
-        minStats = 100
-
-    results = _async_stat_updates_(req=request, minStats=minStats)
-    return render(request, 'targets/list.html', {'targets': results, 'minStats': minStats})
