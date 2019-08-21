@@ -14,7 +14,7 @@
 <div class="container">
     <form action="/targets/view" method="get">
         <div class="form-group">
-            <label for="minStats">Minimum Stats (Total)</label>
+            <label for="minStats">Minimum Total Stats</label>
             <input type="number" class="form-control" id="minStats" name="minStats" placeholder="1000" value="{{ minStats }}">
         </div>
         <button type="submit" class="btn btn-primary mb-2">Get Targets</button>
@@ -26,32 +26,32 @@
             <thead>
               <tr>
                 <th>Name</th>
-                <th>Age</th>
-                <th data-sortable="true">Last Action</th>
-                <th data-sortable="true">Level</th>
-                <th>Status</th>
                 <th data-sortable="true" data-field="total">Total</th>
+                <th>Updated</th>
+                <th data-sortable="true">Last Action</th>
                 <th data-sortable="true">Strength</th>
                 <th data-sortable="true">Defense</th>
                 <th data-sortable="true">Speed</th>
                 <th data-sortable="true">Dexterity</th>
-                <th>Updated</th>
+                <th>Status</th>
+                <th data-sortable="true">Level</th>
+                <th>Age</th>
               </tr>
             </thead>
             <tbody>
             {% for target in targets %}
               <tr>
                 <td><a href="https://www.torn.com/profiles.php?XID={{ target.torn_id }}">{{ target.torn_name }}</a></td>
-                <td>{{ target.age }}</td>
-                <td{% if target.last_action_diff < 7776000 %} class="table-warning"{% endif %}>{{ target.last_action_relative }}</td>
-                <td>{{ target.level }}</td>
-                <td{% if 'ospital' in target.status %} class="table-warning"{% endif %}>{{ target.status }}</td>
                 <td>{{ target.total }}</td>
+                <td{% if target.status_updated_diff > 360 %} class="table-warning"{% endif %}>{{ target.status_updated_relative }}</td>
+                <td>{{ target.last_action_relative }}</td>
                 <td>{{ target.strength }}</td>
                 <td>{{ target.defense }}</td>
                 <td>{{ target.speed }}</td>
                 <td>{{ target.dexterity }}</td>
-                <td{% if target.status_updated_diff > 360 %} class="table-warning"{% endif %}>{{ target.status_updated_relative }}</td>
+                <td>{{ target.status }}</td>
+                <td>{{ target.level }}</td>
+                <td>{{ target.age }}</td>
               </tr>
             {% endfor %}
             </tbody>
