@@ -33,6 +33,7 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     'keymanager.apps.KeymanagerConfig',
     'targets.apps.TargetsConfig',
+    'corsheaders',
     'django_celery_results',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -44,6 +45,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -130,6 +132,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_URL = '/mediafiles/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles')
+
+CORS_ORIGIN_WHITELIST = [
+    'http://closes.org',
+    'http://home.n1029.com:49012',
+    'http://s02.n1029.com:1337',
+]
 
 CELERY_RESULT_BACKEND = 'django-db'
 
