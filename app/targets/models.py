@@ -41,6 +41,8 @@ class Target(models.Model):
     life_current = models.IntegerField(blank=True, null=True)
     life_max = models.IntegerField(blank=True, null=True)
     status_updated = models.DateTimeField(null=True, blank=True)
+    timestamp_hospital = models.BigIntegerField(null=True, blank=True)
+    timestamp_jail = models.BigIntegerField(null=True, blank=True)
     level = models.IntegerField(blank=True, null=True)
     rank = models.CharField(max_length=32, blank=True, null=True)
     gender = models.CharField(max_length=16, blank=True, null=True)
@@ -60,7 +62,7 @@ class Target(models.Model):
 
     @property
     def status_updated_diff(self):
-        return (time.time() - self.status_updated.timestamp())
+        return int((time.time() - self.status_updated.timestamp()))
 
     @property
     def last_action_relative(self):
@@ -75,7 +77,7 @@ class Target(models.Model):
 
     @property
     def last_action_diff(self):
-        return time.time() - self.last_action
+        return int(time.time() - self.last_action)
 
     def update_profile(self, account, wait=settings.TORN_API_RATE):
         if self.status_updated:
@@ -127,6 +129,8 @@ class Target(models.Model):
         output['donator'] = tmpprofile.get('donator')
         output['property'] = tmpprofile.get('property_id')
         output['last_action'] = tmpprofile.get('last_action').get('timestamp')
+        output['timestamp_hospital'] = tmpprofile.get('states', {}).get('hospital_timestamp', None)
+        output['timestamp_jail'] = tmpprofile.get('states', {}).get('jail_timestamp', None)
         return output
 
 
@@ -136,11 +140,11 @@ class SpyReport(models.Model):
     torn_id = models.ForeignKey(Target, on_delete=models.CASCADE)
     spy = models.ForeignKey(kmModels.Account, on_delete=models.PROTECT, blank=True, null=True)
     level = models.IntegerField(blank=True)
-    strength = models.FloatField(blank=True)
-    defense = models.FloatField(blank=True)
-    speed = models.FloatField(blank=True)
-    dexterity = models.FloatField(blank=True)
-    total = models.FloatField(blank=True)
+    strength = models.IntegerField(blank=True)
+    defense = models.IntegerField(blank=True)
+    speed = models.IntegerField(blank=True)
+    dexterity = models.IntegerField(blank=True)
+    total = models.IntegerField(blank=True)
     archived = models.BooleanField(default=False)
 
     def mark_archived(self):
@@ -151,6 +155,21 @@ class SpyReport(models.Model):
 def mark_previous_reports_as_archived(sender, instance, created, **kwargs):
     if created:
         SpyReport.objects.filter(torn_id=instance.torn_id, archived=False).exclude(pk=instance.pk).update(archived=True)
+
+
+def status_enum(status_text: str, ts_hospital: int, ts_jail: int) -> tuple:
+    if 'Okay' in status_text:
+        return 0, 0
+    elif 'hospital' in status_text or ts_hospital > 0:
+        delay = int(ts_hospital - time.time())
+        return 1, delay
+    elif 'jail' in status_text or ts_jail > 0:
+        delay = int(ts_jail - time.time())
+        return 2, delay
+    elif 'travel' in status_text:
+        return 3, 180  # Dummy value because there isn't a way to determine landing time
+    else:
+        return 9, 999999
 
 
 @celery.app.task
@@ -188,6 +207,8 @@ def update_profile_job(target_pk, account_pk, update=True, wait=settings.TORN_AP
         'life_current': target.life_current,
         'life_max': target.life_max,
         'rank': target.rank,
+        'status_enum': status_enum(target.status, target.timestamp_hospital, target.timestamp_jail)[0],
+        'status_delay_sec': status_enum(target.status, target.timestamp_hospital, target.timestamp_jail)[1],
         'status': target.status,
         'status2': target.status2,
         'torn_id': target.torn_id,
