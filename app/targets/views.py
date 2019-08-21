@@ -8,7 +8,7 @@ from celery import group
 def _async_stat_updates_(req, minStats: int, maxStats: int, targetCount: int):
     accounts = kmodels.Account.objects.filter(api_ready=True)
     spy_reports = tmodels.SpyReport.objects.filter(total__gte=minStats, total__lte=maxStats, archived=False) \
-                      .order_by('total', '-date_spied') \
+                      .order_by('-total', '-date_spied') \
                       .select_related('torn_id')[:min(targetCount, settings.TORN_API_MAX_TARGET_RETURN)]
     tmpjobs = list()
     update_permissions = settings.TORN_API_UNAUTHD_UPDATES or \
@@ -26,14 +26,14 @@ def _async_stat_updates_(req, minStats: int, maxStats: int, targetCount: int):
 
 def targets_json_async(request):
     try:
-        minStats = int(request.GET.get('minStats', 100))
+        minStats = int(request.GET.get('minStats', 0))
     except ValueError:
-        minStats = 100
+        minStats = 0
 
     try:
-        maxStats = int(request.GET.get('maxStats', 500))
+        maxStats = int(request.GET.get('maxStats', 9000000000))
     except ValueError:
-        maxStats = 500
+        maxStats = 9000000000
 
     try:
         targetCount = int(request.GET.get('targetCount', 8))
@@ -41,4 +41,4 @@ def targets_json_async(request):
         targetCount = 8
 
     results = _async_stat_updates_(req=request, minStats=minStats, maxStats=maxStats, targetCount=targetCount)
-    return JsonResponse({'targets': results}, json_dumps_params={'indent': 2})
+    return JsonResponse({'targets': results})
