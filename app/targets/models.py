@@ -31,6 +31,7 @@ def relative_time(utcdatetime):
     else:
         return f"{int(diffseconds / 60 / 60 / 24)} days"
 
+
 class Target(models.Model):
     added = models.DateTimeField(auto_now_add=True)
     torn_id = models.CharField(max_length=16, primary_key=True)
@@ -57,6 +58,9 @@ class Target(models.Model):
     def status_updated_relative(self):
         return relative_time(self.status_updated)
 
+    @property
+    def status_updated_diff(self):
+        return (time.time() - self.status_updated.timestamp())
 
     @property
     def last_action_relative(self):
@@ -67,6 +71,11 @@ class Target(models.Model):
             return self.torn_name + " " + self.torn_id
         else:
             return self.torn_id
+
+
+    @property
+    def last_action_diff(self):
+        return time.time() - self.last_action
 
     def update_profile(self, account, wait=settings.TORN_API_RATE):
         if self.status_updated:
@@ -145,12 +154,12 @@ def mark_previous_reports_as_archived(sender, instance, created, **kwargs):
 
 
 @celery.app.task
-def update_profile_job(target_pk, account_pk, wait=settings.TORN_API_RATE):
+def update_profile_job(target_pk, account_pk, update=True, wait=settings.TORN_API_RATE):
     target = Target.objects.get(pk=target_pk)
     account = kmModels.Account.objects.get(pk=account_pk)
     if target.status_updated:
         if (target.status_updated + dt.timedelta(minutes=settings.TORN_API_MIN_STATUS_DWELL_MINUTES)) < \
-                dt.datetime.utcnow().replace(tzinfo=pytz.UTC):
+                dt.datetime.utcnow().replace(tzinfo=pytz.UTC) and update is True:
             try:
                 tmpprofile = target.__get_profile__(account=account)
                 for attr, value in tmpprofile.items():
@@ -184,7 +193,9 @@ def update_profile_job(target_pk, account_pk, wait=settings.TORN_API_RATE):
         'torn_id': target.torn_id,
         'torn_name': target.torn_name,
         'last_action_relative': target.last_action_relative,
-        'refreshed': target.status_updated_relative,
+        'last_action_diff': target.last_action_diff,
+        'status_updated_relative': target.status_updated_relative,
+        'status_updated_diff': target.status_updated_diff,
     }
 
     if spyrep:

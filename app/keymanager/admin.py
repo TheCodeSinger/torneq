@@ -9,6 +9,19 @@ class AccountAdmin(admin.ModelAdmin):
     fields = ['torn_id', 'torn_name', 'api_key'].extend(readonly_fields)
 
 
+    def get_readonly_fields(self, request, obj=None):
+        if request.user.is_superuser:
+            return self.readonly_fields
+        return self.readonly_fields + ['fsuser_id']
+
+
+    def get_queryset(self, request):
+        qset = super(AccountAdmin, self).get_queryset(request)
+        if request.user.is_superuser:
+            return qset
+        return qset.filter(fsuser_id=request.user)
+
+
 @admin.register(models.APILog)
 class APILogAdmin(admin.ModelAdmin):
     list_display = ['url', 'status_code', 'account', 'key', 'activity_time', 'originating_ip']

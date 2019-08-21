@@ -33,6 +33,7 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     'keymanager.apps.KeymanagerConfig',
     'targets.apps.TargetsConfig',
+    'corsheaders',
     'django_celery_results',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -44,6 +45,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -131,9 +133,16 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_URL = '/mediafiles/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles')
 
+CORS_ORIGIN_WHITELIST = [
+    'http://closes.org',
+    'http://home.n1029.com:49012',
+    'http://s02.n1029.com:1337',
+]
+
 CELERY_RESULT_BACKEND = 'django-db'
 
 TORN_API_RATE = int(os.environ.get('API_RATE', default=1))  # xx/yy Maximum of yy requests per xx seconds
 TORN_API_BASE_URL = """https://api.torn.com/"""
 TORN_API_MIN_STATUS_DWELL_MINUTES = int(os.environ.get('API_MIN_STATUS_DWELL_MINUTES', default=5))
 TORN_API_MAX_TARGET_RETURN = int(os.environ.get('API_MAX_TARGET_RETURN', default=30))
+TORN_API_UNAUTHD_UPDATES = bool(os.environ.get('API_UNAUTHD_UPDATES', default=False))
