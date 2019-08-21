@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en-us" ng-app="LevelingTargets">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>List of Leveling Targets</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.core.min.js"></script>
+    <script src="targets.js" type="text/javascript"></script>
+
+    <link rel="stylesheet" crossorigin="anonymous"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.css">
+    <link rel="stylesheet" href="targets.css">      
+  </head>
+  <body>
+    <div class="container" ng-controller="TargetsCtrl">
+      <h1 class="mt-3">List of Leveling Targets</h1>
+
+      <form name="filtersForm" ng-submit="applyFilters()" novalidate>
+        <div class="mt-4 form-row">
+          <div class="col">
+            <button type="submit" 
+              class="btn btn-primary mb-2">Submit</button>
+          </div>
+          <div class="col">
+            <input type="number" 
+              class="form-control" 
+              id="min-stats" 
+              name="minStats" 
+              placeholder="Min stats"
+              ng-model="filters.minStats">
+          </div>
+          <div class="col">
+            <input type="number" 
+              class="form-control" 
+              id="max-stats" 
+              name="maxStats" 
+              placeholder="Max stats"
+              ng-model="filters.maxStats">
+          </div>
+        </div>
+      </form>
+
+      <div ng-if="showServerError" class="mt-4 alert alert-danger" role="alert">
+        There was an error retrieving data from the server. If the issue persists, contact the faction API Developers.
+      </div>
+
+      <div class="mt-4 table-responsive" ng-if="filtersApplied">
+        <table class="table table-hover table-striped table-bordered table-sm">
+          <thead class="thead-light">
+            <tr>
+              <th>Name</th>
+              <th>Status</th>
+              <th>Total Stats</th>
+              <th class="d-none d-md-table-cell">Strength</th>
+              <th class="d-none d-md-table-cell">Defense</th>
+              <th class="d-none d-md-table-cell">Speed</th>
+              <th class="d-none d-md-table-cell">Dexterity</th>
+              <th>Level</th>
+              <th class="d-none d-md-table-cell">Age</th>
+              <th>Last Action</th>
+              <th>Updated</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-if="fetchingTargets">
+              <td class="text-center" colspan="11">
+                <i class="fas fa-3x fa-spinner fa-spin"></i>
+              </td>
+            </tr>
+            <tr ng-if="!fetchingTargets && !targets.length">
+              <td class="text-center" colspan="11">No targets found.</td>
+            </tr>
+            <tr ng-if="!fetchingTargets && targets.length" 
+              ng-repeat="target in targets"
+              ng-class="::{'eq-text-muted': !target._isOkay}">
+              <td>
+                <a target="_target" 
+                  ng-class="::{'eq-text-muted': !target._isOkay}"
+                  href="https://www.torn.com/profiles.php?XID={{ target.torn_id }}">
+                  {{::target.torn_name }}
+                </a>
+              </td>
+              <td>
+                <i class="fas fa-circle fa-xs text-success float-left pt-2 pr-1" 
+                  ng-class="::{'text-warning': target.status !== 'Okay'}"></i>
+                <span class="d-none d-md-table-cell" title="{{::target._statusReason}}">
+                  {{::target.status}}
+                </span>
+              </td>
+              <td>{{::target.total }}</td>
+              <td class="d-none d-md-table-cell">{{::target.strength}}</td>
+              <td class="d-none d-md-table-cell">{{::target.defense}}</td>
+              <td class="d-none d-md-table-cell">{{::target.speed}}</td>
+              <td class="d-none d-md-table-cell">{{::target.dexterity}}</td>
+              <td>{{::target.level }}</td>
+              <td class="d-none d-md-table-cell">{{::target.age}}</td>
+              <td ng-class="::{'eq-bg-warning': !target._isInactive}">
+                {{::target.last_action_relative}}
+              </td>
+              <td>{{::target.status_updated_relative}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>  
+
+  </body>
+</html>
