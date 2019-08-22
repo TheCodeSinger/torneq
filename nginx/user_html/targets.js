@@ -1,7 +1,7 @@
 (function () {
    'use strict';
 
-  angular.module('LevelingTargets', ['ngAnimate', 'ngTouch', 'ngSanitize', 'ui.bootstrap'])
+  angular.module('LevelingTargets', [])
     .controller('TargetsCtrl', TargetsCtrlFn);
 
   function TargetsCtrlFn($scope, TornApiService) {
