@@ -3,5 +3,9 @@
 }
 
 .eq-bg-warning {
-  background-color: #fff6de;
+  background-color: #fffff2;
+}
+
+.eq-bg-danger {
+  background-color: #fff2f2;
 }
