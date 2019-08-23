@@ -50,7 +50,7 @@
       if (target._isHospitalized || target._isJailed) {
         target._delayTime = _humanizeDuration(target.status_delay_sec, true);
         target._shortStatus = 
-          (target._isHospitalized ? 'Hosp ' : 'Jail ') + target._delayTime;
+          (target._isHospitalized ? 'Hospital ' : 'Jail ') + target._delayTime;
       } else if (target._isTraveling) {
         target._delayTime = '';
         target._shortStatus = target.status;
@@ -196,7 +196,7 @@
      * @return    {Object}   Promise to resolve the API request.
      */
     function fetchTargets(params) {
-      params = angular.extend({
+      params = angular.merge({
         targetCount: 10,
       }, params);
       return $http({

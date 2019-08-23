@@ -5,8 +5,12 @@
     .controller('TargetsCtrl', TargetsCtrlFn);
 
   function TargetsCtrlFn($scope, TornApiService) {
-    angular.extend($scope, {
-      filters: {
+    // Pull last known filters from Local Storage.
+    var previousFilters = 
+      localStorage && JSON.parse(localStorage.getItem('targetFilters'));
+
+    angular.merge($scope, {
+      filters: previousFilters || {
         // Default number of targets to fetch.
         targetCount: '10',
       },
@@ -15,6 +19,14 @@
       // Exposed methods.
       applyFilters: applyFilters,
     });
+
+    this.$onInit = function $onInit() {
+      // If previous filters are available, then fetch targets, otherwise wait 
+      // for user to specify parameters.
+      if ($scope.filters.minStats || $scope.filters.maxStats) {
+        applyFilters();
+      }
+    }
 
     /**
      * Gets a list of targets.
@@ -47,6 +59,11 @@
      */
     function applyFilters(){
       $scope.filtersApplied = true;
+
+      if (localStorage) {
+        localStorage.setItem('targetFilters', JSON.stringify($scope.filters));
+      }
+
       _getTargets($scope.filters);
     };
   };
