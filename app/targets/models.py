@@ -166,7 +166,7 @@ def status_enum(status_text: str, ts_hospital: int, ts_jail: int) -> tuple:
     elif 'jail' in status_text or ts_jail > 0:
         delay = int(ts_jail - time.time())
         return 2, delay
-    elif 'travel' in status_text:
+    elif 'Travel' in status_text or 'In ' in status_text or 'Returning to' in status_text:
         return 3, 180  # Dummy value because there isn't a way to determine landing time
     else:
         return 9, 999999
