@@ -101,7 +101,7 @@
                   {{::target.torn_name }}
                 </a>
                 <div class="d-block d-lg-none">
-                  <small>{{::!target._isOkay ? target.status : ''}}</small>
+                  <small>{{::!target._isOkay ? target._shortStatus : ''}}</small>
                 </div>
               </td>
               <td>
@@ -109,15 +109,15 @@
                   <i class="fas fa-circle fa-xs text-success float-left pt-2 pr-1" 
                     ng-class="::{'text-warning': target.status !== 'Okay'}"></i>
                   <span class="d-none d-lg-inline">{{::target.status}}</span>
-                  <span class="d-none d-sm-inline d-lg-none">{{::target._shortStatus}}</span>
+                  <span class="d-inline d-lg-none">{{::target._delayTime}}</span>
                   <div class="d-none d-lg-block"><small>{{::target._scrubbedReason}}</small></div>
                 </div>
               </td>
-              <td>{{::target.total }}</td>
-              <td class="d-none d-md-table-cell">{{::target.strength}}</td>
-              <td class="d-none d-md-table-cell">{{::target.defense}}</td>
-              <td class="d-none d-md-table-cell">{{::target.speed}}</td>
-              <td class="d-none d-md-table-cell">{{::target.dexterity}}</td>
+              <td>{{::target._total }}</td>
+              <td class="d-none d-md-table-cell">{{::target._strength}}</td>
+              <td class="d-none d-md-table-cell">{{::target._defense}}</td>
+              <td class="d-none d-md-table-cell">{{::target._speed}}</td>
+              <td class="d-none d-md-table-cell">{{::target._dexterity}}</td>
               <td>{{::target.level }}</td>
               <td class="d-none d-md-table-cell">
                 <span class="d-none d-lg-inline">{{::target._age}}</span>

@@ -45,10 +45,15 @@
             target.status_enum);
       }
 
-      // If we know how long the target will be unavailble, store a short string 
+      // Store short string versions of status and delay, if known.
       // version for responsive layout.
       if (target._isHospitalized || target._isJailed) {
-        target._shortStatus = _humanizeDuration(target.status_delay_sec, true);
+        target._delayTime = _humanizeDuration(target.status_delay_sec, true);
+        target._shortStatus = 
+          (target._isHospitalized ? 'Hosp ' : 'Jail ') + target._delayTime;
+      } else if (target._isTraveling) {
+        target._delayTime = '';
+        target._shortStatus = target.status;
       }
 
       // Calculate humanized statements of age. The raw value is in days, so 
@@ -59,6 +64,13 @@
       // Calculate humanized statements of Last Action: 54 secs, 1 hour, 2 days.
       target._LastAction = _humanizeDuration(target.last_action_diff);
       target._shortLastAction = _humanizeDuration(target.last_action_diff, true);
+
+      // Calculate humanized stat numbers: 1.2m, 54k.
+      target._total = _humanizeStats(target.total);
+      target._strength = _humanizeStats(target.strength);
+      target._dexterity = _humanizeStats(target.dexterity);
+      target._speed = _humanizeStats(target.speed);
+      target._defense = _humanizeStats(target.defense);
 
       // Consider target active if last action was less than 30 days ago. 
       // 60 seconds * 60 minutes * 24 hours * 30 days = 2592000 seconds.
@@ -139,6 +151,40 @@
         // 2+ years
         default:
           return Math.floor(seconds/60/60/24/30/12) + units[11];
+      }
+    }
+
+    /**
+     * Returns a humanized stats string: 1.8b, 54k, 2k.
+     *
+     * @method   _humanizeStats
+     * @param    {Number}    stats         Number of stats.
+     * @param    {Number}    [precision]   Number of decimal places to show. 
+     *                                     Default 1.
+     * @return   {String}    Humanized stats string.
+     */
+    function _humanizeStats(stats, precision) {
+      precision = precision || 1;
+
+      switch(true) {
+        case !stats:
+          return '0';
+
+        // 1 - 999 stats
+        case stats < 1000:
+          return stats;
+
+        // 1,000 - 999,999 stats
+        case stats < 1000000:
+          return (stats/1000).toFixed(precision) + 'k';
+
+        // 1 million - 999,999,999 stats
+        case stats < 1000000000:
+          return (stats/1000000).toFixed(precision) + 'm';
+
+        // 1 billion+
+        default:
+          return (stats/1000000000).toFixed(precision) + 'b';
       }
     }
 

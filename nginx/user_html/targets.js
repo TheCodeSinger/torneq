@@ -7,7 +7,8 @@
   function TargetsCtrlFn($scope, TornApiService) {
     angular.extend($scope, {
       filters: {
-        targetCount: "10",
+        // Default number of targets to fetch.
+        targetCount: '10',
       },
       targets: [],
 
