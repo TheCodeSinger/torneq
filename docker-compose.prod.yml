@@ -24,7 +24,6 @@ services:
   nginx:
     build: ./nginx
     volumes:
-      - user_html:/usr/src/app/user_html
       - static_volume:/usr/src/app/staticfiles
       - media_volume:/usr/src/app/mediafiles
     ports:
@@ -47,4 +46,3 @@ volumes:
   postgres_data:
   static_volume:
   media_volume:
-  user_html:
