@@ -36,9 +36,9 @@ def targets_json_async(request):
         maxStats = 9000000000
 
     try:
-        targetCount = int(request.GET.get('targetCount', 8))
+        targetCount = int(request.GET.get('targetCount', 10))
     except ValueError:
-        targetCount = 8
+        targetCount = 10
 
     results = _async_stat_updates_(req=request, minStats=minStats, maxStats=maxStats, targetCount=targetCount)
     return JsonResponse({'targets': results})
