@@ -6,7 +6,9 @@
 
   function TargetsCtrlFn($scope, TornApiService) {
     angular.extend($scope, {
-      filters: {},
+      filters: {
+        targetCount: "10",
+      },
       targets: [],
 
       // Exposed methods.
