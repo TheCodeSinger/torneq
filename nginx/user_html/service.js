@@ -112,7 +112,7 @@
       }, params);
       return $http({
         method: 'get',
-        url: 'http://home.n1029.com:49012/app/targets/json',
+        url: '/app/targets/json',
         params: params
       }).then(
         function fetchTargetsSuccess(response) {
