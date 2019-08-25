@@ -140,18 +140,18 @@ class SpyReport(models.Model):
     torn_id = models.ForeignKey(Target, on_delete=models.CASCADE)
     spy = models.ForeignKey(kmModels.Account, on_delete=models.PROTECT, blank=True, null=True)
     level = models.IntegerField(blank=True)
-    strength = models.IntegerField(blank=True)
-    defense = models.IntegerField(blank=True)
-    speed = models.IntegerField(blank=True)
-    dexterity = models.IntegerField(blank=True)
-    total = models.IntegerField(blank=True)
+    strength = models.BigIntegerField(blank=True)
+    defense = models.BigIntegerField(blank=True)
+    speed = models.BigIntegerField(blank=True)
+    dexterity = models.BigIntegerField(blank=True)
+    total = models.BigIntegerField(blank=True)
     archived = models.BooleanField(default=False)
 
     def mark_archived(self):
         self.archived = True
 
 
-# @receiver(post_save, sender=SpyReport)
+@receiver(post_save, sender=SpyReport)
 def mark_previous_reports_as_archived(sender, instance, created, **kwargs):
     if created:
         SpyReport.objects.filter(torn_id=instance.torn_id, archived=False).exclude(pk=instance.pk).update(archived=True)
