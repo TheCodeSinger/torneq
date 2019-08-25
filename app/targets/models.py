@@ -83,15 +83,22 @@ class Target(models.Model):
         if self.status_updated:
             if (self.status_updated + dt.timedelta(minutes=settings.TORN_API_MIN_STATUS_DWELL_MINUTES)) < \
                     dt.datetime.utcnow().replace(tzinfo=pytz.UTC):
-                try:
-                    tmpprofile = self.__get_profile__(account=account)
-                    for attr, value in tmpprofile.items():
-                        setattr(self, attr, value)
-                    self.save()
-                except kmModels.APINotReadyException:
+                if ((self.timestamp_jail-time.time())/60 < 5 or
+                        (self.timestamp_hospital-time.time())/60 < 5) and \
+                        (self.status_updated + dt.timedelta(minutes=settings.TORN_API_MIN_STATUS_DWELL_MINUTES * 5)) < \
+                        dt.datetime.utcnow().replace(tzinfo=pytz.UTC):
+
+                    try:
+                        tmpprofile = self.__get_profile__(account=account)
+                        for attr, value in tmpprofile.items():
+                            setattr(self, attr, value)
+                        self.save()
+                    except kmModels.APINotReadyException:
+                        return False
+                    time.sleep(wait)
+                    return True
+                else:
                     return False
-                time.sleep(wait)
-                return True
             else:
                 return False
         else:
