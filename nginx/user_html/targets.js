@@ -1,10 +1,23 @@
 (function (angular, undefined) {
    'use strict';
 
-  angular.module('LevelingTargets', [])
+  angular.module('EqTornApp')
+    .config(configFn)
     .controller('TargetsCtrl', TargetsCtrlFn);
 
-  function TargetsCtrlFn($scope, TornApiService) {
+  function configFn($stateProvider) {
+    $stateProvider
+      .state('targets', {
+        name: 'Targets',
+        url: '^/targets',
+        controller: 'TargetsCtrl as $ctrl',
+        templateUrl: 'targets.html',
+      });
+  }
+
+  function TargetsCtrlFn($scope, EqTornService) {
+    var $ctrl = this;
+
     // Pull last known filters from Local Storage.
     var previousFilters = 
       localStorage && JSON.parse(localStorage.getItem('targetFilters'));
@@ -38,7 +51,7 @@
       $scope.fetchingTargets = true;
       $scope.showServerError = false;
 
-      TornApiService.fetchTargets(params).then(
+      EqTornService.fetchTargets(params).then(
         function getTargetsSuccess(targets) {
           $scope.targets = targets;
         },

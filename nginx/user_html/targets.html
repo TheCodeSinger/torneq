@@ -1,143 +1,120 @@
-<!doctype html>
-<html lang="en-us" ng-app="LevelingTargets">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+<h1 class="mt-3">Leveling Targets</h1>
 
-    <title>List of Leveling Targets</title>
+<form name="filtersForm" ng-submit="applyFilters()" novalidate>
+  <div class="mt-4 form-row">
+    <div class="col">
+      <button type="submit" class="btn btn-primary mb-1 d-inline">Submit</button>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script>
-    <script src="targets.js" type="text/javascript"></script>
-    <script src="service.js" type="text/javascript"></script>
+        <mat-form-field>
+          <mat-label></mat-label>
+          <input type="number" 
+            class="form-control d-inline ml-3" 
+            style="width: 125px;"
+            id="min-stats" 
+            name="minStats" 
+            placeholder="Min stats"
+            ng-model="filters.minStats">
+        </mat-form-field>
 
-    <link rel="stylesheet" crossorigin="anonymous"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
-      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
-    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.css">
-    <link rel="stylesheet" href="targets.css">      
-  </head>
-  <body>
-    <div class="container" ng-controller="TargetsCtrl">
-      <h1 class="mt-3">Leveling Targets</h1>
+      <input type="number" 
+        class="form-control d-inline ml-3" 
+        style="width: 125px;"
+        id="max-stats" 
+        name="maxStats" 
+        placeholder="Max stats"
+        ng-model="filters.maxStats">
+    </div>
+    <!-- Restore after we have enough keys to support larger queries. -->
+    <!-- <div class="col">
+      <select name="targetCount" class="custom-select" ng-model="filters.targetCount">
+        <option value="5">5 Targets</option>
+        <option value="10" selected>10 Targets</option>
+        <option value="15">15 Targets</option>
+        <option value="20">20 Targets</option>
+      </select>
+    </div> -->
+  </div>
+</form>
 
-      <form name="filtersForm" ng-submit="applyFilters()" novalidate>
-        <div class="mt-4 form-row">
-          <div class="col">
-            <button type="submit" 
-              class="btn btn-primary mb-2">Submit</button>
+<div ng-if="!filtersApplied" class="mt-4 alert alert-info" role="alert">
+  Specify minimum or maximum total stats and click Submit.
+</div>
+
+<div ng-if="showServerError" class="mt-4 alert alert-danger" role="alert">
+  There was an error retrieving data from the server. If the issue persists, contact the faction API Developers.
+</div>
+
+<div class="mt-4 table-responsive" ng-if="filtersApplied">
+  <table class="table table-hover table-striped table-bordered table-sm bg-light">
+    <thead class="thead-light">
+      <tr>
+        <th>Name</th>
+        <th><div class="d-none d-sm-block">Status</div></th>
+        <th>
+          <div class="d-none d-lg-block">Total Stats</div>
+          <div class="d-xs-block d-lg-none">Stats</div>
+        </th>
+        <th class="d-none d-md-table-cell">Str</th>
+        <th class="d-none d-md-table-cell">Def</th>
+        <th class="d-none d-md-table-cell">Spd</th>
+        <th class="d-none d-md-table-cell">Dex</th>
+        <th>Level</th>
+        <th class="d-none d-md-table-cell">Age</th>
+        <th>
+          <div class="d-none d-lg-block">Last Action</div>
+          <div class="d-xs-block d-lg-none">Action</div>
+        </th>
+        <th class="d-none d-md-table-cell">Updated</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-if="fetchingTargets">
+        <td class="text-center" colspan="11">
+          <i class="fas fa-3x fa-spinner fa-spin"></i>
+        </td>
+      </tr>
+      <tr ng-if="!fetchingTargets && !targets.length">
+        <td class="text-center" colspan="11">No targets found.</td>
+      </tr>
+      <tr ng-if="!fetchingTargets && targets.length" 
+        ng-repeat="target in targets"
+        ng-class="::{'text-muted': !target._isOkay}">
+        <td>
+          <a target="_target" 
+            ng-class="::{'text-muted': !target._isOkay}"
+            href="https://www.torn.com/profiles.php?XID={{ target.torn_id }}">
+            {{::target.torn_name }}
+          </a>
+          <div class="d-block d-lg-none">
+            <small>{{::!target._isOkay ? target._shortStatus : ''}}</small>
           </div>
-          <div class="col">
-            <input type="number" 
-              class="form-control" 
-              id="min-stats" 
-              name="minStats" 
-              placeholder="Min stats"
-              ng-model="filters.minStats">
+        </td>
+        <td>
+          <div title="{{::target._scrubbedReason}}">
+            <i class="fas fa-circle fa-xs text-success float-left pt-2 pr-1" 
+              ng-class="::{'text-warning': target.status !== 'Okay'}"></i>
+            <span class="d-none d-lg-inline">{{::target.status}}</span>
+            <span class="d-inline d-lg-none">{{::target._delayTime}}</span>
+            <div class="d-none d-lg-block"><small>{{::target._scrubbedReason}}</small></div>
           </div>
-          <div class="col">
-            <input type="number" 
-              class="form-control" 
-              id="max-stats" 
-              name="maxStats" 
-              placeholder="Max stats"
-              ng-model="filters.maxStats">
-          </div>
-          <!-- Restore after we have enough keys to support larger queries. -->
-          <!-- <div class="col">
-            <select name="targetCount" class="custom-select" ng-model="filters.targetCount">
-              <option value="5">5 Targets</option>
-              <option value="10" selected>10 Targets</option>
-              <option value="15">15 Targets</option>
-              <option value="20">20 Targets</option>
-            </select>
-          </div> -->
-        </div>
-      </form>
-
-      <div ng-if="!filtersApplied" class="mt-4 alert alert-info" role="alert">
-        Specify minimum or maximum total stats and click Submit.
-      </div>
-
-      <div ng-if="showServerError" class="mt-4 alert alert-danger" role="alert">
-        There was an error retrieving data from the server. If the issue persists, contact the faction API Developers.
-      </div>
-
-      <div class="mt-4 table-responsive" ng-if="filtersApplied">
-        <table class="table table-hover table-striped table-bordered table-sm">
-          <thead class="thead-light">
-            <tr>
-              <th>Name</th>
-              <th><div class="d-none d-sm-block">Status</div></th>
-              <th>
-                <div class="d-none d-lg-block">Total Stats</div>
-                <div class="d-xs-block d-lg-none">Stats</div>
-              </th>
-              <th class="d-none d-md-table-cell">Str</th>
-              <th class="d-none d-md-table-cell">Def</th>
-              <th class="d-none d-md-table-cell">Spd</th>
-              <th class="d-none d-md-table-cell">Dex</th>
-              <th>Level</th>
-              <th class="d-none d-md-table-cell">Age</th>
-              <th>
-                <div class="d-none d-lg-block">Last Action</div>
-                <div class="d-xs-block d-lg-none">Action</div>
-              </th>
-              <th class="d-none d-md-table-cell">Updated</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr ng-if="fetchingTargets">
-              <td class="text-center" colspan="11">
-                <i class="fas fa-3x fa-spinner fa-spin"></i>
-              </td>
-            </tr>
-            <tr ng-if="!fetchingTargets && !targets.length">
-              <td class="text-center" colspan="11">No targets found.</td>
-            </tr>
-            <tr ng-if="!fetchingTargets && targets.length" 
-              ng-repeat="target in targets"
-              ng-class="::{'text-muted': !target._isOkay}">
-              <td>
-                <a target="_target" 
-                  ng-class="::{'text-muted': !target._isOkay}"
-                  href="https://www.torn.com/profiles.php?XID={{ target.torn_id }}">
-                  {{::target.torn_name }}
-                </a>
-                <div class="d-block d-lg-none">
-                  <small>{{::!target._isOkay ? target._shortStatus : ''}}</small>
-                </div>
-              </td>
-              <td>
-                <div title="{{::target._scrubbedReason}}">
-                  <i class="fas fa-circle fa-xs text-success float-left pt-2 pr-1" 
-                    ng-class="::{'text-warning': target.status !== 'Okay'}"></i>
-                  <span class="d-none d-lg-inline">{{::target.status}}</span>
-                  <span class="d-inline d-lg-none">{{::target._delayTime}}</span>
-                  <div class="d-none d-lg-block"><small>{{::target._scrubbedReason}}</small></div>
-                </div>
-              </td>
-              <td>{{::target._total }}</td>
-              <td class="d-none d-md-table-cell">{{::target._strength}}</td>
-              <td class="d-none d-md-table-cell">{{::target._defense}}</td>
-              <td class="d-none d-md-table-cell">{{::target._speed}}</td>
-              <td class="d-none d-md-table-cell">{{::target._dexterity}}</td>
-              <td>{{::target.level }}</td>
-              <td class="d-none d-md-table-cell">
-                <span class="d-none d-lg-inline">{{::target._age}}</span>
-                <span class="d-none d-sm-inline d-lg-none">{{::target._shortAge}}</span>
-              </td>
-              <td ng-class="::{'eq-bg-warning': target._isActive, 
-                'eq-bg-danger': target._isVeryActive }">
-                <span class="d-none d-lg-inline">{{::target._LastAction}}</span>
-                <span class="d-inline d-lg-none">{{::target._shortLastAction}}</span>
-              </td>
-              <td class="d-none d-md-table-cell">{{::target.status_updated_relative}}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>  
-
-  </body>
-</html>
+        </td>
+        <td>{{::target._total }}</td>
+        <td class="d-none d-md-table-cell">{{::target._strength}}</td>
+        <td class="d-none d-md-table-cell">{{::target._defense}}</td>
+        <td class="d-none d-md-table-cell">{{::target._speed}}</td>
+        <td class="d-none d-md-table-cell">{{::target._dexterity}}</td>
+        <td>{{::target.level }}</td>
+        <td class="d-none d-md-table-cell">
+          <span class="d-none d-lg-inline">{{::target._age}}</span>
+          <span class="d-none d-sm-inline d-lg-none">{{::target._shortAge}}</span>
+        </td>
+        <td ng-class="::{'eq-bg-warning': target._isActive, 
+          'eq-bg-danger': target._isVeryActive }">
+          <span class="d-none d-lg-inline">{{::target._LastAction}}</span>
+          <span class="d-inline d-lg-none">{{::target._shortLastAction}}</span>
+        </td>
+        <td class="d-none d-md-table-cell">{{::target.status_updated_relative}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

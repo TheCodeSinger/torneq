@@ -1,12 +1,12 @@
 (function (angular, undefined) {
    'use strict';
 
-  angular.module('LevelingTargets')
-    .service('TornApiService', TornApiServiceFn);
+  angular.module('EqTornApp')
+    .service('EqTornService', EqTornServiceFn);
 
-  function TornApiServiceFn($q, $http) {
+  function EqTornServiceFn($q, $http) {
     
-    var TornService = {
+    var EqTornService = {
       fetchTargets: fetchTargets,
     }; 
 
@@ -201,7 +201,7 @@
       }, params);
       return $http({
         method: 'get',
-        url: '/app/targets/json',
+        url: 'http://home.n1029.com:49012/app/targets/json',
         params: params
       }).then(
         function fetchTargetsSuccess(response) {
@@ -210,7 +210,7 @@
       );
     }
 
-    return TornService;
+    return EqTornService;
   }  
 
 })(angular);

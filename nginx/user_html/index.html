@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+
+    <title>Equilibrium</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/1.0.22/angular-ui-router.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.core.min.js"></script>
+    <script src="app.js" type="text/javascript"></script>
+    <script src="service.js" type="text/javascript"></script>
+    <script src="targets.js" type="text/javascript"></script>
+    <script src="contact.js" type="text/javascript"></script>
+
+    <link rel="stylesheet" crossorigin="anonymous"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.css">
+    <link rel="stylesheet" href="app.css">
+
+    <style>
+      body:before {
+        content: ' ';
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.2;
+        background-image: url(assets/city-bg.png);
+        background-repeat: no-repeat;
+        background-position: 50% 0;
+        -ms-background-size: cover;
+        -o-background-size: cover;
+        -moz-background-size: cover;
+        -webkit-background-size: cover;
+        background-size: cover;
+      }      
+      .cover-container { z-index: 2;}
+    </style>
+  </head>
+
+  <body class="text-center" ng-app="EqTornApp">
+    <nav class="site-header sticky-top py-1">
+      <div class="container d-flex flex-row justify-content-between">
+        <a class="py-2" ui-sref="home">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="d-inline-block mx-auto" role="img" viewBox="0 0 24 24" focusable="false"><!-- <title>Equilibrium</title> --><circle cx="12" cy="12" r="10"></circle><path d="M14.31 8l5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16L3.95 6.06M14.31 16H2.83m13.79-4l-5.74 9.94"></path></svg> Equilibrium
+        </a>
+        <span class="d-inline-block">
+          <a class="py-2 px-2 d-inline-block" ui-sref="home">Home</a>
+          <a class="py-2 px-2 d-inline-block" ui-sref="targets">Targets</a>
+          <a class="py-2 px-2 d-inline-block" ui-sref="contact">Contact</a>
+        </span>
+      </div>
+    </nav>
+
+    <div class="position-relative overflow-hidden p-3 text-center">
+      <div class="px-lg-3 mx-auto" ui-view></div>
+    </div>
+
+  </body>
+</html>
