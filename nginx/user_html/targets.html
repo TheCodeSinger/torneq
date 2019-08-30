@@ -1,20 +1,17 @@
 <h1 class="mt-3">Leveling Targets</h1>
 
-<form name="filtersForm" ng-submit="applyFilters()" novalidate>
+<form name="$ctrl.filtersForm" ng-submit="$ctrl.applyFilters()" novalidate>
   <div class="mt-4 form-row">
     <div class="col">
       <button type="submit" class="btn btn-primary mb-1 d-inline">Submit</button>
 
-        <mat-form-field>
-          <mat-label></mat-label>
-          <input type="number" 
-            class="form-control d-inline ml-3" 
-            style="width: 125px;"
-            id="min-stats" 
-            name="minStats" 
-            placeholder="Min stats"
-            ng-model="filters.minStats">
-        </mat-form-field>
+      <input type="number" 
+        class="form-control d-inline ml-3" 
+        style="width: 125px;"
+        id="min-stats" 
+        name="minStats" 
+        placeholder="Min stats"
+        ng-model="$ctrl.filters.minStats">
 
       <input type="number" 
         class="form-control d-inline ml-3" 
@@ -22,11 +19,11 @@
         id="max-stats" 
         name="maxStats" 
         placeholder="Max stats"
-        ng-model="filters.maxStats">
+        ng-model="$ctrl.filters.maxStats">
     </div>
     <!-- Restore after we have enough keys to support larger queries. -->
     <!-- <div class="col">
-      <select name="targetCount" class="custom-select" ng-model="filters.targetCount">
+      <select name="targetCount" class="custom-select" ng-model="$ctrl.filters.targetCount">
         <option value="5">5 Targets</option>
         <option value="10" selected>10 Targets</option>
         <option value="15">15 Targets</option>
@@ -36,15 +33,15 @@
   </div>
 </form>
 
-<div ng-if="!filtersApplied" class="mt-4 alert alert-info" role="alert">
+<div ng-if="!$ctrl.filtersApplied" class="mt-4 alert alert-info" role="alert">
   Specify minimum or maximum total stats and click Submit.
 </div>
 
-<div ng-if="showServerError" class="mt-4 alert alert-danger" role="alert">
+<div ng-if="$ctrl.showServerError" class="mt-4 alert alert-danger" role="alert">
   There was an error retrieving data from the server. If the issue persists, contact the faction API Developers.
 </div>
 
-<div class="mt-4 table-responsive" ng-if="filtersApplied">
+<div class="mt-4 table-responsive" ng-if="$ctrl.filtersApplied">
   <table class="table table-hover table-striped table-bordered table-sm bg-light">
     <thead class="thead-light">
       <tr>
@@ -68,16 +65,16 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-if="fetchingTargets">
+      <tr ng-if="$ctrl.fetchingTargets">
         <td class="text-center" colspan="11">
           <i class="fas fa-3x fa-spinner fa-spin"></i>
         </td>
       </tr>
-      <tr ng-if="!fetchingTargets && !targets.length">
+      <tr ng-if="!$ctrl.fetchingTargets && !$ctrl.targets.length">
         <td class="text-center" colspan="11">No targets found.</td>
       </tr>
-      <tr ng-if="!fetchingTargets && targets.length" 
-        ng-repeat="target in targets"
+      <tr ng-if="!$ctrl.fetchingTargets && $ctrl.targets.length" 
+        ng-repeat="target in $ctrl.targets"
         ng-class="::{'text-muted': !target._isOkay}">
         <td>
           <a target="_target" 

@@ -15,14 +15,14 @@
       });
   }
 
-  function TargetsCtrlFn($scope, EqTornService) {
+  function TargetsCtrlFn(_, EqTornService) {
     var $ctrl = this;
 
     // Pull last known filters from Local Storage.
     var previousFilters = 
       localStorage && JSON.parse(localStorage.getItem('targetFilters'));
 
-    angular.merge($scope, {
+    _.assignIn($ctrl, {
       filters: previousFilters || {
         // Default number of targets to fetch.
         targetCount: '10',
@@ -36,7 +36,7 @@
     this.$onInit = function $onInit() {
       // If previous filters are available, then fetch targets, otherwise wait 
       // for user to specify parameters.
-      if ($scope.filters.minStats || $scope.filters.maxStats) {
+      if ($ctrl.filters.minStats || $ctrl.filters.maxStats) {
         applyFilters();
       }
     }
@@ -48,19 +48,19 @@
      * @param     {Object}   [params]   Optional request params.
      */
     function _getTargets(params) {
-      $scope.fetchingTargets = true;
-      $scope.showServerError = false;
+      $ctrl.fetchingTargets = true;
+      $ctrl.showServerError = false;
 
       EqTornService.fetchTargets(params).then(
         function getTargetsSuccess(targets) {
-          $scope.targets = targets;
+          $ctrl.targets = targets;
         },
         function getTargetsFailure(response) {
-          $scope.showServerError = true;
+          $ctrl.showServerError = true;
         },
       ).finally(
         function getTargetsFinally() {
-          $scope.fetchingTargets = false;
+          $ctrl.fetchingTargets = false;
         }
       );
     }
@@ -71,13 +71,13 @@
      * @method    applyFilters
      */
     function applyFilters(){
-      $scope.filtersApplied = true;
+      $ctrl.filtersApplied = true;
 
       if (localStorage) {
-        localStorage.setItem('targetFilters', JSON.stringify($scope.filters));
+        localStorage.setItem('targetFilters', JSON.stringify($ctrl.filters));
       }
 
-      _getTargets($scope.filters);
+      _getTargets($ctrl.filters);
     };
   };
 

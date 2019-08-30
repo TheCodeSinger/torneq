@@ -8,6 +8,8 @@
     
     var EqTornService = {
       fetchTargets: fetchTargets,
+      hideLi: hideLi,
+      showLi: showLi,     
     }; 
 
     var secondsInDay = 24 * 60 * 60;
@@ -201,7 +203,7 @@
       }, params);
       return $http({
         method: 'get',
-        url: 'http://home.n1029.com:49012/app/targets/json',
+        url: '/app/targets/json',
         params: params
       }).then(
         function fetchTargetsSuccess(response) {
@@ -209,6 +211,22 @@
         }
       );
     }
+
+    function showLi() {
+      var elements = document.getElementsByClassName('hidden-li');
+      for (var x = elements.length - 1; x >= 0; x--) {
+        elements[x].className = 'visible-li';
+      }
+      document.getElementById('show-li-link').className = 'hidden-li';
+    }
+
+    function hideLi() {
+      var elements = document.getElementsByClassName('visible-li');
+      for (var i = elements.length - 1; i >= 0; i--) {
+        elements[i].className = 'hidden-li';
+      }
+      document.getElementById('show-li-link').className = 'visible-li';
+    }    
 
     return EqTornService;
   }  
