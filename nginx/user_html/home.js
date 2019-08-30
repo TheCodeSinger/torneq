@@ -6,7 +6,6 @@
     .controller('HomeCtrl', HomeCtrlFn);
 
   function configFn($stateProvider, $urlRouterProvider) {
-    $urlRouterProvider.when('', '/home').otherwise('/home');
     $stateProvider
       .state('home', {
         name: 'Home',
