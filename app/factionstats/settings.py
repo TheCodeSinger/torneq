@@ -127,6 +127,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
+SESSION_COOKIE_AGE = 60*60*24*8  # 8 days
+
 STATIC_URL = '/staticfiles/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
@@ -137,6 +139,7 @@ CORS_ORIGIN_WHITELIST = [
     'http://closes.org',
     'http://home.n1029.com:49012',
     'http://s02.n1029.com:1337',
+    'http://tctools.club',
 ]
 
 CELERY_RESULT_BACKEND = 'django-db'
