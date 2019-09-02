@@ -12,7 +12,7 @@ class TargetAdmin(admin.ModelAdmin):
 
 @admin.register(models.SpyReport)
 class SpyReportAdmin(admin.ModelAdmin):
-    list_display = ['torn_id', 'date_spied', 'spy', 'level', 'total']
+    list_display = ['torn_id', 'date_spied', 'level', 'total']
 
     def has_change_permission(self, request, obj=None):
         return False

@@ -145,7 +145,7 @@ class SpyReport(models.Model):
     added = models.DateTimeField(auto_now_add=True)
     date_spied = models.DateTimeField(null=True, blank=True)
     torn_id = models.ForeignKey(Target, on_delete=models.CASCADE)
-    spy = models.ForeignKey(kmModels.Account, on_delete=models.PROTECT, blank=True, null=True)
+    # spy = models.ForeignKey(kmModels.Account, on_delete=models.PROTECT, blank=True, null=True)
     level = models.IntegerField(blank=True)
     strength = models.BigIntegerField(blank=True)
     defense = models.BigIntegerField(blank=True)
