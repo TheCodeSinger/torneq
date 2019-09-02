@@ -20,6 +20,7 @@ from django.contrib.auth import views as auth_views
 urlpatterns = [
     path('app/fsadmin/', admin.site.urls),
     path('app/targets/', include('targets.urls')),
+    path('app/keymanager/', include('keymanager.urls')),
     path('app/accounts/login/', auth_views.LoginView.as_view),
     path('app/accounts/logout/', auth_views.LogoutView.as_view),
     path('app/accounts/password_change/', auth_views.PasswordChangeView.as_view),

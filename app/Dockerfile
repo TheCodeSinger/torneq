@@ -26,8 +26,8 @@ FROM foundation AS sourcecode
 COPY ./entrypoint.prod.sh /usr/src/app/entrypoint.prod.sh
 RUN chmod +x /usr/src/app/entrypoint.prod.sh
 
-# copy project
-COPY . /usr/src/app/
-
 # run entrypoint.prod.sh
 ENTRYPOINT ["/usr/src/app/entrypoint.prod.sh"]
+
+# copy project
+COPY . /usr/src/app/
