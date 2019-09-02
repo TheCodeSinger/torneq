@@ -1,11 +1,11 @@
 version: "3.0"
 
 services:
-  web:
+  app:
     build:
       context: ./app
       dockerfile: Dockerfile
-    image: &img webimg
+    image: &img appimg
     command: gunicorn factionstats.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - static_volume:/usr/src/app/staticfiles
@@ -27,16 +27,17 @@ services:
       - static_volume:/usr/src/app/staticfiles
       - media_volume:/usr/src/app/mediafiles
     ports:
-      - 1337:80
+      - 80:80
+      - 443:443
     depends_on:
-      - web
+      - app
   redis:
     image: redis:latest
     expose:
       - 6379
   worker:
     image: *img
-    command: celery -A factionstats worker --loglevel=info --concurrency=2
+    command: celery -A factionstats worker --loglevel=warning --concurrency=2 --without-gossip --max-tasks-per-child=90
     env_file: ./env
     depends_on:
       - db
