@@ -19,12 +19,15 @@ def tornauth(request):
             if 'error' in results.json():
                 return JsonResponse(data=results.json())
             elif 'player_id' in results.json():
-                login_user = User.objects.get_or_create(username=results.json()['name'])
-                api_account = kmodels.Account.objects.get_or_create(torn_id=results.json()['player_id'],
-                                                                    torn_name=results.json()['name'],
-                                                                    api_key=request.POST['apikey'],
-                                                                    fsuser_id=login_user[0])
-                auth.login(request, login_user[0])
-                return JsonResponse(data={'login': True, 'name': login_user[0].username})
+                if results.json()['faction']['faction_name'] == 'Equilibrium':
+                    login_user = User.objects.get_or_create(username=results.json()['name'])
+                    api_account = kmodels.Account.objects.get_or_create(torn_id=results.json()['player_id'],
+                                                                        torn_name=results.json()['name'],
+                                                                        api_key=request.POST['apikey'],
+                                                                        fsuser_id=login_user[0])
+                    auth.login(request, login_user[0])
+                    return JsonResponse(data={'login': True, 'name': login_user[0].username})
+                else:
+                    return JsonResponse(data={'login': False, 'error': 'Not in the righteous faction.'})
 
-    return JsonResponse(data={'login': False, 'reason': 'API Key is invalid'})
+    return JsonResponse(data={'login': False, 'error': 'API Key is invalid'})
