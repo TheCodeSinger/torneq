@@ -9,6 +9,7 @@
     var EqTornService = {
       fetchTargets: fetchTargets,
       hideLi: hideLi,
+      login: login,
       showLi: showLi,     
     }; 
 
@@ -204,6 +205,7 @@
       return $http({
         method: 'get',
         url: '/app/targets/json',
+        //url: 'http://home.n1029.com:49012/app/targets/json',
         params: params
       }).then(
         function fetchTargetsSuccess(response) {
@@ -212,6 +214,11 @@
       );
     }
 
+    /**
+     * Shows all showable <li> which are hidden.
+     *
+     * @method    showLi
+     */
     function showLi() {
       var elements = document.getElementsByClassName('hidden-li');
       for (var x = elements.length - 1; x >= 0; x--) {
@@ -220,13 +227,40 @@
       document.getElementById('show-li-link').className = 'hidden-li';
     }
 
+    /**
+     * Hides all hidable <li> which are visible.
+     *
+     * @method    hideLi
+     */
     function hideLi() {
       var elements = document.getElementsByClassName('visible-li');
       for (var i = elements.length - 1; i >= 0; i--) {
         elements[i].className = 'hidden-li';
       }
       document.getElementById('show-li-link').className = 'visible-li';
-    }    
+    }
+
+    /**
+     * Hides all hidable <li> which are visible.
+     *
+     * @method    login
+     * @param     {Number}   apiKey   API Key to auth.
+     * @return    {Object}   Promise to resolve the API request.
+     */
+    function login(apiKey) {
+      //return $q.resolve({ login: true, name: 'David', id: 2252482 });
+      return $http({
+        method: 'post',
+        url: '/app/keymanager/tornauth',
+        //url: 'http://home.n1029.com:49012/app/keymanager/tornauth',
+        params: { apiKey: apiKey }
+      }).then(
+        function loginApiSuccess(response) {
+          return response || {};
+        }
+      );
+    }
+
 
     return EqTornService;
   }  

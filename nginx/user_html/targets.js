@@ -23,21 +23,24 @@
       localStorage && JSON.parse(localStorage.getItem('targetFilters'));
 
     _.assignIn($ctrl, {
+      apiKey: localStorage && localStorage.getItem('apiKey'),
       filters: previousFilters || {
         // Default number of targets to fetch.
         targetCount: '10',
       },
+      isLoggedIn: false,
       targets: [],
 
       // Exposed methods.
       applyFilters: applyFilters,
+      login: login,
+      logout: logout,
     });
 
     this.$onInit = function $onInit() {
-      // If previous filters are available, then fetch targets, otherwise wait 
-      // for user to specify parameters.
-      if ($ctrl.filters.minStats || $ctrl.filters.maxStats) {
-        applyFilters();
+      // If API Key was saved, then log in user.
+      if($ctrl.apiKey) {
+        login();
       }
     }
 
@@ -73,12 +76,64 @@
     function applyFilters(){
       $ctrl.filtersApplied = true;
 
+      // Save latest filter values in local storage.
       if (localStorage) {
         localStorage.setItem('targetFilters', JSON.stringify($ctrl.filters));
       }
 
       _getTargets($ctrl.filters);
-    };
+    }
+
+    /**
+     * Saves the API Key and logs in the user.
+     *
+     * @method    login
+     * @return    {object}   Promise to login user.
+     */
+    function login(){
+      $ctrl.logging = true;
+
+      return EqTornService.login($ctrl.apiKey).then(
+        function loginSuccess(response) {
+          $ctrl.isLoggedIn = true;
+          $ctrl.username = response.name;
+          $ctrl.userId = response.id;
+
+          // Store the API Key in local storage.
+          if (localStorage && $ctrl.rememberApiKey) {
+            localStorage.setItem('apiKey', parseInt($ctrl.apiKey, 10));
+          };
+
+          // If previous filters are available, then fetch targets, 
+          // otherwise wait for user to specify parameters.
+          if ($ctrl.filters.minStats || $ctrl.filters.maxStats) {
+            applyFilters();
+          }
+        },
+        function loginFailure(response) {
+          $ctrl.showLoginError = true;
+        },
+      ).finally(
+        function loginFinally() {
+          $ctrl.logging = false;
+        }
+      );
+    }
+
+    /**
+     * Clears the API Key and logs out the user.
+     *
+     * @method    logout
+     */
+    function logout(){
+      $ctrl.isLoggedIn = false;
+      $ctrl.username = $ctrl.userId = $ctrl.apiKey = undefined;
+
+      // Clear the API Key from local storage.
+      if (localStorage) {
+        localStorage.removeItem('apiKey');
+      }
+    }
   };
 
 })(angular);
