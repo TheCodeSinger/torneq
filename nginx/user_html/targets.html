@@ -1,4 +1,8 @@
-<h1 class="mt-3">Leveling Targets</h1>
+<h1 class="mt-3">
+  Leveling Targets
+  <span style="font-size: 16px;" ng-if="$ctrl.user.name">for <a href="https://www.torn.com/profiles.php?XID={{$ctrl.user.id}}">{{$ctrl.user.name}}</a></span>
+</h1>
+
 
 <div ng-if="!$ctrl.isLoggedIn">
   <div class="mt-4">

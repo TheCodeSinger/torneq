@@ -5,14 +5,14 @@
     .service('EqTornService', EqTornServiceFn);
 
   function EqTornServiceFn($q, $http) {
-    
+
     var EqTornService = {
       getUser: getUser,
       fetchTargets: fetchTargets,
       hideLi: hideLi,
       login: login,
-      showLi: showLi,     
-    }; 
+      showLi: showLi,
+    };
 
     var cachedUser = {
       name: '',
@@ -39,24 +39,24 @@
 
       // Convert `status_enum`` to human readable properties.
       switch (target.status_enum) {
-        case (0):                
+        case (0):
           target._isOkay = true;
           break;
 
-        case (1):                
+        case (1):
           target._isHospitalized = true;
           break;
 
-        case (2):                
+        case (2):
           target._isJailed = true;
           break;
 
-        case (3):                
+        case (3):
           target._isTraveling = true;
           break;
 
         default:
-          console.warn('target.status_enum is an unknown value: ' + 
+          console.warn('target.status_enum is an unknown value: ' +
             target.status_enum);
       }
 
@@ -64,14 +64,14 @@
       // version for responsive layout.
       if (target._isHospitalized || target._isJailed) {
         target._delayTime = _humanizeDuration(target.status_delay_sec, true);
-        target._shortStatus = 
+        target._shortStatus =
           (target._isHospitalized ? 'Hospital ' : 'Jail ') + target._delayTime;
       } else if (target._isTraveling) {
         target._delayTime = '';
         target._shortStatus = target.status;
       }
 
-      // Calculate humanized statements of age. The raw value is in days, so 
+      // Calculate humanized statements of age. The raw value is in days, so
       // need to convert to seconds first.
       target._age = _humanizeDuration(target.age * secondsInDay);
       target._shortAge = _humanizeDuration(target.age * secondsInDay, true);
@@ -87,7 +87,7 @@
       target._speed = _humanizeStats(target.speed);
       target._defense = _humanizeStats(target.defense);
 
-      // Consider target active if last action was less than 30 days ago. 
+      // Consider target active if last action was less than 30 days ago.
       // 60 seconds * 60 minutes * 24 hours * 30 days = 2592000 seconds.
       target._isActive = target.last_action_diff < 2592000;
 
@@ -174,7 +174,7 @@
      *
      * @method   _humanizeStats
      * @param    {Number}    stats         Number of stats.
-     * @param    {Number}    [precision]   Number of decimal places to show. 
+     * @param    {Number}    [precision]   Number of decimal places to show.
      *                                     Default 1.
      * @return   {String}    Humanized stats string.
      */
@@ -260,7 +260,7 @@
      */
     function login(apiKey) {
       if (mockMode) {
-        var mockLoginResponse = { login: true, name: 'David', id: 2252482 };
+        var mockLoginResponse = { login: true, name: 'Aarlo', id: 2252482 };
         setUser(mockLoginResponse);
         return $q.resolve(mockLoginResponse);
       }
@@ -304,6 +304,6 @@
 
 
     return EqTornService;
-  }  
+  }
 
 })(angular);
