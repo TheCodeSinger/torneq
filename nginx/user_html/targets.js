@@ -19,7 +19,7 @@
     var $ctrl = this;
 
     // Pull last known filters from Local Storage.
-    var previousFilters = 
+    var previousFilters =
       localStorage && JSON.parse(localStorage.getItem('targetFilters'));
 
     _.assignIn($ctrl, {
@@ -96,15 +96,14 @@
       return EqTornService.login($ctrl.apiKey).then(
         function loginSuccess(response) {
           $ctrl.isLoggedIn = true;
-          $ctrl.username = response.name;
-          $ctrl.userId = response.id;
+          $ctrl.user = EqTornService.getUser();
 
           // Store the API Key in local storage.
           if (localStorage && $ctrl.rememberApiKey) {
             localStorage.setItem('apiKey', parseInt($ctrl.apiKey, 10));
           };
 
-          // If previous filters are available, then fetch targets, 
+          // If previous filters are available, then fetch targets,
           // otherwise wait for user to specify parameters.
           if ($ctrl.filters.minStats || $ctrl.filters.maxStats) {
             applyFilters();
@@ -112,6 +111,7 @@
         },
         function loginFailure(response) {
           $ctrl.showLoginError = true;
+          $ctrl.user = {};
         },
       ).finally(
         function loginFinally() {
@@ -127,7 +127,8 @@
      */
     function logout(){
       $ctrl.isLoggedIn = false;
-      $ctrl.username = $ctrl.userId = $ctrl.apiKey = undefined;
+      $ctrl.user = {};
+      $ctrl.apiKey = undefined;
 
       // Clear the API Key from local storage.
       if (localStorage) {

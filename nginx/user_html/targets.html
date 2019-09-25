@@ -1,30 +1,30 @@
 <h1 class="mt-3">Leveling Targets</h1>
 
-<div ng-if="!$ctrl.isLoggedIn">  
+<div ng-if="!$ctrl.isLoggedIn">
   <div class="mt-4">
     <form name="$ctrl.loginForm" ng-submit="$ctrl.login()">
       Enter your <a href="https://www.torn.com/preferences.php#tab=api" target="_blank">API key</a> to start.&nbsp;
-      <input type="number" 
-        class="form-control d-inline" 
+      <input type="number"
+        class="form-control d-inline"
         style="width: 225px;"
-        name="apiKey" 
+        name="apiKey"
         placeholder="API Key"
         required
-        ng-model="$ctrl.apiKey"> 
-      <input type="submit" 
-        class="btn btn-primary mb-1 d-inline" 
+        ng-model="$ctrl.apiKey">
+      <input type="submit"
+        class="btn btn-primary mb-1 d-inline"
         ng-disabled="$ctrl.logging"
         value="Login">
       &nbsp;
       <div class="form-check d-inline-block">
-        <input class="form-check-input" 
-          type="checkbox" 
-          id="login-remember" 
+        <input class="form-check-input"
+          type="checkbox"
+          id="login-remember"
           ng-model="$ctrl.rememberApiKey">
-        <label 
-          class="form-check-label" 
+        <label
+          class="form-check-label"
           for="login-remember">Remember me on this device</label>
-      </div>              
+      </div>
     </form>
 
     <div ng-if="$ctrl.showLoginError" class="mt-4 alert alert-danger" role="alert">
@@ -38,48 +38,50 @@
       <br>
       If the issue persists, contact the faction API Developers.
     </div>
-  </div>    
+  </div>
 </div>
 
 <div ng-if="$ctrl.isLoggedIn">
-  <form name="$ctrl.filtersForm" 
-    ng-submit="$ctrl.applyFilters()" 
+  <form name="$ctrl.filtersForm"
+    ng-submit="$ctrl.applyFilters()"
     novalidate>
     <div class="mt-4 form-row">
       <div class="col">
-        <input type="number" 
-          class="form-control d-inline" 
+        <input type="number"
+          class="form-control d-inline"
           style="width: 125px;"
-          id="min-stats" 
-          name="minStats" 
+          id="min-stats"
+          name="minStats"
           placeholder="Min stats"
           ng-model="$ctrl.filters.minStats">
 
-        <input type="number" 
-          class="form-control d-inline ml-3" 
+        <input type="number"
+          class="form-control d-inline ml-3"
           style="width: 125px;"
-          id="max-stats" 
-          name="maxStats" 
+          id="max-stats"
+          name="maxStats"
           placeholder="Max stats"
           ng-model="$ctrl.filters.maxStats">
 
-        <button type="submit" 
-          class="btn btn-primary mb-1 ml-3 d-inline">Submit</button>
-
-        <button type="button" 
-          class="btn btn-link pull-right" 
-          ng-disabled="$ctrl.logging"
-          ng-click="$ctrl.logout()">Log out</button>
-      </div>
-      <!-- Restore after we have enough keys to support larger queries. -->
-      <!-- <div class="col">
-        <select name="targetCount" class="custom-select" ng-model="$ctrl.filters.targetCount">
+        <select name="targetCount"
+          class="custom-select form-control d-inline ml-3 mb-1"
+          style="width: 125px;"
+          matNativeControl
+          ng-model="$ctrl.filters.targetCount">
           <option value="5">5 Targets</option>
           <option value="10" selected>10 Targets</option>
           <option value="15">15 Targets</option>
           <option value="20">20 Targets</option>
         </select>
-      </div> -->
+
+        <button type="submit"
+          class="btn btn-primary mb-1 ml-3 d-inline">Submit</button>
+
+        <button type="button"
+          class="btn btn-link pull-right"
+          ng-disabled="$ctrl.logging"
+          ng-click="$ctrl.logout()">Log out</button>
+      </div>
     </div>
   </form>
 
@@ -89,7 +91,7 @@
 
   <div ng-if="$ctrl.showServerError" class="mt-4 alert alert-danger" role="alert">
     There was an error retrieving data from the server.
-    <br> 
+    <br>
     If the issue persists, contact the faction API Developers.
   </div>
 
@@ -125,11 +127,11 @@
         <tr ng-if="!$ctrl.fetchingTargets && !$ctrl.targets.length">
           <td class="text-center" colspan="11">No targets found.</td>
         </tr>
-        <tr ng-if="!$ctrl.fetchingTargets && $ctrl.targets.length" 
+        <tr ng-if="!$ctrl.fetchingTargets && $ctrl.targets.length"
           ng-repeat="target in $ctrl.targets"
           ng-class="::{'text-muted': !target._isOkay}">
           <td>
-            <a target="_target" 
+            <a target="_target"
               ng-class="::{'text-muted': !target._isOkay}"
               href="https://www.torn.com/profiles.php?XID={{ target.torn_id }}">
               {{::target.torn_name }}
@@ -140,7 +142,7 @@
           </td>
           <td>
             <div title="{{::target._scrubbedReason}}">
-              <i class="fas fa-circle fa-xs text-success float-left pt-2 pr-1" 
+              <i class="fas fa-circle fa-xs text-success float-left pt-2 pr-1"
                 ng-class="::{'text-warning': target.status !== 'Okay'}"></i>
               <span class="d-none d-lg-inline">{{::target.status}}</span>
               <span class="d-inline d-lg-none">{{::target._delayTime}}</span>
@@ -157,7 +159,7 @@
             <span class="d-none d-lg-inline">{{::target._age}}</span>
             <span class="d-none d-sm-inline d-lg-none">{{::target._shortAge}}</span>
           </td>
-          <td ng-class="::{'eq-bg-warning': target._isActive, 
+          <td ng-class="::{'eq-bg-warning': target._isActive,
             'eq-bg-danger': target._isVeryActive }">
             <span class="d-none d-lg-inline">{{::target._LastAction}}</span>
             <span class="d-inline d-lg-none">{{::target._shortLastAction}}</span>

@@ -7,13 +7,25 @@
   function EqTornServiceFn($q, $http) {
     
     var EqTornService = {
+      getUser: getUser,
       fetchTargets: fetchTargets,
       hideLi: hideLi,
       login: login,
       showLi: showLi,     
     }; 
 
+    var cachedUser = {
+      name: '',
+      id: undefined,
+    };
+
     var secondsInDay = 24 * 60 * 60;
+
+    // Set true to return mock API responses.
+    var mockMode = false;
+
+    // If not hosted on the primary domain, the use fqdn in endpoints.
+    var corsMode = !!window.location.href.indexOf('tctools.club');
 
     /**
      * Transforms a target by decorating with derived properties.
@@ -204,8 +216,7 @@
       }, params);
       return $http({
         method: 'get',
-        url: '/app/targets/json',
-        //url: 'http://home.n1029.com:49012/app/targets/json',
+        url: corsMode ? 'http://home.n1029.com:49012/app/targets/json' : '/app/targets/json',
         params: params
       }).then(
         function fetchTargetsSuccess(response) {
@@ -248,17 +259,47 @@
      * @return    {Object}   Promise to resolve the API request.
      */
     function login(apiKey) {
-      //return $q.resolve({ login: true, name: 'David', id: 2252482 });
+      if (mockMode) {
+        var mockLoginResponse = { login: true, name: 'David', id: 2252482 };
+        setUser(mockLoginResponse);
+        return $q.resolve(mockLoginResponse);
+      }
+
       return $http({
         method: 'post',
-        url: '/app/keymanager/tornauth',
-        //url: 'http://home.n1029.com:49012/app/keymanager/tornauth',
-        params: { apiKey: apiKey }
+        url: corsMode ? 'http://home.n1029.com:49012/app/keymanager/tornauth' : '/app/keymanager/tornauth',
+        params: { apikey: apiKey },
       }).then(
         function loginApiSuccess(response) {
-          return response || {};
+          response = response || {};
+          setUser(response);
+          return response;
         }
       );
+    }
+
+    /**
+     * Gets the cached User object.
+     *
+     * @method    getUser
+     * @return    {Object}   User object.
+     */
+    function getUser() {
+      return cachedUser;
+    }
+
+    /**
+     * Hides all hidable <li> which are visible.
+     *
+     * @method    setUser
+     * @param     {Object}   user   User object to set.
+     * @return    {Object}   User object.
+     */
+    function setUser(user) {
+      return cachedUser = {
+        id: user.id,
+        name: user.name,
+      };
     }
 
 
