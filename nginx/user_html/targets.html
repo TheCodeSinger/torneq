@@ -4,11 +4,11 @@
 </h1>
 
 
-<div ng-if="!$ctrl.isLoggedIn">
+<div ng-if="!$ctrl.user.login">
   <div class="mt-4">
     <form name="$ctrl.loginForm" ng-submit="$ctrl.login()">
       Enter your <a href="https://www.torn.com/preferences.php#tab=api" target="_blank">API key</a> to start.&nbsp;
-      <input type="number"
+      <input type="text"
         class="form-control d-inline"
         style="width: 225px;"
         name="apiKey"
@@ -32,9 +32,9 @@
     </form>
 
     <div ng-if="$ctrl.showLoginError" class="mt-4 alert alert-danger" role="alert">
-      There was an error when attempting to log in. Please try again.
+      There was an error when attempting to log in: {{$ctrl.user.error}}.
       <br>
-      If the issue persists, contact the faction API Developers.
+      Please try again. If the issue persists, contact the faction API Developers.
     </div>
 
     <div ng-if="$ctrl.showLogoutError" class="mt-4 alert alert-danger" role="alert">
@@ -45,7 +45,7 @@
   </div>
 </div>
 
-<div ng-if="$ctrl.isLoggedIn">
+<div ng-if="$ctrl.user.login">
   <form name="$ctrl.filtersForm"
     ng-submit="$ctrl.applyFilters()"
     novalidate>

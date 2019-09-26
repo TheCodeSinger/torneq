@@ -25,7 +25,7 @@
     var mockMode = false;
 
     // If not hosted on the primary domain, the use fqdn in endpoints.
-    var corsMode = !!window.location.href.indexOf('tctools.club');
+    var fqdn = window.location.href.indexOf('tctools.club') === -1 ? 'http://tctools.club' : '';
 
     /**
      * Transforms a target by decorating with derived properties.
@@ -216,7 +216,7 @@
       }, params);
       return $http({
         method: 'get',
-        url: corsMode ? 'http://home.n1029.com:49012/app/targets/json' : '/app/targets/json',
+        url: fqdn + '/app/targets/json',
         params: params
       }).then(
         function fetchTargetsSuccess(response) {
@@ -260,20 +260,20 @@
      */
     function login(apiKey) {
       if (mockMode) {
-        var mockLoginResponse = { login: true, name: 'Aarlo', id: 2252482 };
+        var mockLoginResponse = { login: true, name: 'MockUser', id: 1234567 };
         setUser(mockLoginResponse);
         return $q.resolve(mockLoginResponse);
       }
 
       return $http({
         method: 'post',
-        url: corsMode ? 'http://home.n1029.com:49012/app/keymanager/tornauth' : '/app/keymanager/tornauth',
-        params: { apikey: apiKey },
+        url: fqdn + '/app/keymanager/tornauth',
+        params: { apiey: apiKey },
       }).then(
         function loginApiSuccess(response) {
-          response = response || {};
-          setUser(response);
-          return response;
+          response.data = response.data || {};
+          setUser(response.data);
+          return response.data;
         }
       );
     }

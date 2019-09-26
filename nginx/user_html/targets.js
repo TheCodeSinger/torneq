@@ -28,7 +28,6 @@
         // Default number of targets to fetch.
         targetCount: '10',
       },
-      isLoggedIn: false,
       targets: [],
 
       // Exposed methods.
@@ -88,14 +87,20 @@
      * Saves the API Key and logs in the user.
      *
      * @method    login
-     * @return    {object}   Promise to login user.
      */
     function login(){
       $ctrl.logging = true;
+      $ctrl.showLoginError = false;
+      $ctrl.user = {};
 
-      return EqTornService.login($ctrl.apiKey).then(
+      EqTornService.login($ctrl.apiKey).then(
         function loginSuccess(response) {
-          $ctrl.isLoggedIn = true;
+          $ctrl.user = response;
+
+          if (!$ctrl.user.login) {
+            return $ctrl.showLoginError = true;
+          }
+
           $ctrl.user = EqTornService.getUser();
 
           // Store the API Key in local storage.
@@ -111,7 +116,6 @@
         },
         function loginFailure(response) {
           $ctrl.showLoginError = true;
-          $ctrl.user = {};
         },
       ).finally(
         function loginFinally() {
@@ -126,7 +130,6 @@
      * @method    logout
      */
     function logout(){
-      $ctrl.isLoggedIn = false;
       $ctrl.user = {};
       $ctrl.apiKey = undefined;
 
