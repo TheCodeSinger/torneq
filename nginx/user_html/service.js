@@ -268,7 +268,7 @@
       return $http({
         method: 'post',
         url: fqdn + '/app/keymanager/tornauth',
-        params: { apiey: apiKey },
+        params: { apikey: apiKey },
       }).then(
         function loginApiSuccess(response) {
           response.data = response.data || {};
