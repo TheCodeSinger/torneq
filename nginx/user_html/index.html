@@ -36,10 +36,13 @@
   </head>
 
   <body class="text-center min-vh-100" ng-app="EqTornApp">
-    <nav class="site-header sticky-top py-1">
-      <div class="container d-flex flex-row justify-content-between">
+    <header role="banner" class="site-header sticky-top py-1">
+      <nav role="main navigation" class="container d-flex flex-row justify-content-between">
         <a class="py-2" ui-sref="home">
-          <img src="assets/fist-white-on-black.png" width="30" height="30" class="d-inline-block m-auto">
+          <img src="assets/fist-white-on-black.png"
+            width="30" height="30"
+            class="d-inline-block m-auto"
+            alt="a white fist held upright with palm facing you. Within a white circle against a black background.">
         </a>
         <span class="d-inline-block">
           <a class="py-2 px-2 d-inline-block" ui-sref="home">News</a>
@@ -47,11 +50,11 @@
           <a class="py-2 px-2 d-inline-block" ui-sref="resources">Resources</a>
           <a class="py-2 px-2 d-inline-block" ui-sref="contact">Contact</a>
         </span>
-      </div>
-    </nav>
+      </nav>
+    </header>
 
     <div class="position-relative overflow-hidden p-3 text-center">
-      <div class="px-lg-3 mx-auto" ui-view></div>
+      <main role="main" class="px-lg-3 mx-auto" ui-view></main>
     </div>
 
   </body>

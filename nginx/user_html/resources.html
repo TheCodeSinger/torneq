@@ -1,12 +1,12 @@
 <div class="container mt-3">
   <h1>Resources</h1>
 
-  <div class="text-center">
+  <nav role="navigation for resources page" class="text-center">
     <button type="button" class="btn btn-link" ng-click="$ctrl.showArticle('leadership')">Leadership Roles</button>
     <button type="button" class="btn btn-link" ng-click="$ctrl.showArticle('chainPrep')">Chain Prep</button>
-  </div>
+  </nav>
 
-  <section class="d-block mt-2 p-3 text-left bg-light-trans" ng-show="$ctrl.articles.chainPrep">
+  <article class="d-block mt-2 p-3 text-left bg-light-trans" ng-show="$ctrl.articles.chainPrep">
     <h3>Chain Prep</h3>
     <p>The day of the week varies, but chains usually start on at 20:00 TCT, which is 1pm Pacific, 4pm Eastern, 9pm London.</p>
     <p><strong>WE NEED EVERYONE</strong> if we are to reach 2500 attacks.</p>
@@ -67,9 +67,9 @@
     <p>Metal wrote a <a href="https://www.torn.com/forums.php#/p=threads&amp;f=999&amp;t=16086326&amp;b=1&amp;a=9524">comprehensive guide</a> and posted it in our faction forum.</p>
 
     <p>Some of you <strong>will</strong> OD during the stacking process. This is reality and it sucks when it happens to you. You may be hospitalized for 3-4 days, you will have a 24 drug cool down, and you'll be at zero life, zero nerve, zero energy, and zero happy both in-game and in real life. If this happens to you, notify the faction on chat or Discord so we can help you. Once you are revived, bring $1.5m and fly to rehab if you are level 15+. If the chain is still more than 24 hours away, you'll have time to pop at least one Xanax. Simply start the process over with what time you have left.</p>
-  </section>  
+  </article>
 
-  <section class="d-block mt-2 p-3 text-left bg-light-trans" ng-show="$ctrl.articles.leadership">
+  <article class="d-block mt-2 p-3 text-left bg-light-trans" ng-show="$ctrl.articles.leadership">
     <h3>Leadership Roles</h3>
     <p>In order to increase member investment, we've created numerous leadership roles so as to involve as many people as possible. Some roles can and should be filled by more than one member. Some roles come with a salary, either per week, event, or project.</p>
     <ul>
@@ -89,7 +89,7 @@
 
     <h4 class="pt-4">Banker</h4>
     <p>Handle member bank withdrawals. Bankers have a responsibility to be online and available for a decent amount of time. They shouldn't travel continuously. This is not intended as a perk so that they have easy access to their own money.</p>
-    
+
     <h5 class="pt-1">Special</h5>
     <p>Because of the sensitive nature of this role, all bankers must connect to the leaders in real life via phone and email. Additionally, banker candidates must have been in the faction for at least 90 days in order to be considered for the role.</p>
 
@@ -153,6 +153,6 @@
     <h3>Other Ideas</h3>
     <em>"Two minds are better than one."</em>
     <p>Let us know if you have an idea not mentioned here. You should feel free to create your own leadership opportunities.</p>
-  </section>
+  </article>
 
 </div>

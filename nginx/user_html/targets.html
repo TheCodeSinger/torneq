@@ -17,12 +17,8 @@
         name="apiKey"
         placeholder="API Key"
         required
+        aria-label="API Key"
         ng-model="$ctrl.apiKey">
-
-      <!-- <input type="submit"
-        class="btn btn-primary ml-3 mb-1 d-inline"
-        ng-if="!$ctrl.logging"
-        value="Log in"> -->
 
       <button class="btn btn-primary ml-3 mb-1 d-inline" type="submit">
         <span ng-if="!$ctrl.logging">Log in</span>
@@ -31,17 +27,6 @@
       </button>
 
       &nbsp;
-
-      <!-- <div class="form-check d-inline-block">
-        <input class="form-check-input"
-          type="checkbox"
-          id="login-remember"
-          ng-model="$ctrl.rememberApiKey">
-
-        <label
-          class="form-check-label"
-          for="login-remember">Remember me on this device</label>
-      </div> -->
     </form>
 
     <div ng-if="$ctrl.showLoginError" class="mt-4 alert alert-danger" role="alert">
@@ -69,6 +54,7 @@
           style="width: 125px;"
           id="min-stats"
           name="minStats"
+          aria-label="Minimum total stats"
           placeholder="Min stats"
           ng-model="$ctrl.filters.minStats">
 
@@ -77,6 +63,7 @@
           style="width: 125px;"
           id="max-stats"
           name="maxStats"
+          aria-label="Maximum total stats"
           placeholder="Max stats"
           ng-model="$ctrl.filters.maxStats">
 
@@ -84,6 +71,7 @@
           class="custom-select form-control d-inline ml-3 mb-1"
           style="width: 125px;"
           matNativeControl
+          aria-label="Number of Targets to display. Default is 10."
           ng-model="$ctrl.filters.targetCount">
           <option value="5">5 Targets</option>
           <option value="10" selected>10 Targets</option>
@@ -91,20 +79,11 @@
           <option value="20">20 Targets</option>
         </select>
 
-        <!-- <button type="submit"
-          class="btn btn-primary mb-1 ml-3 d-inline">Submit</button> -->
-
         <button class="btn btn-primary ml-3 mb-1 d-inline" type="submit">
           <span ng-if="!$ctrl.fetchingTargets">Fetch Targets</span>
           <span ng-if="$ctrl.fetchingTargets" class="spinner-border spinner-border-sm"></span>
           <span ng-if="$ctrl.fetchingTargets">Fetching...</span>
         </button>
-
-        <!-- <button type="button"
-          class="btn btn-link ml-3"
-          ng-if="$ctrl.user.login"
-          ng-disabled="$ctrl.logging"
-          ng-click="$ctrl.logout()">Log out</button> -->
       </div>
     </div>
   </form>
@@ -194,9 +173,3 @@
     </table>
   </div>
 </div>
-
-<!-- <button type="button"
-  class="btn btn-link"
-  ng-if="$ctrl.user.login"
-  ng-disabled="$ctrl.logging"
-  ng-click="$ctrl.logout()">Log out completely</button> -->
