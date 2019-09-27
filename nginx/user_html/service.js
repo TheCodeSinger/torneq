@@ -298,6 +298,7 @@
     function setUser(user) {
       return cachedUser = {
         id: user.tornid,
+        login: user.login,
         name: user.name,
       };
     }
