@@ -41,6 +41,8 @@
       if($ctrl.apiKey) {
         login();
       }
+
+      $ctrl.ready = true;
     }
 
     /**
@@ -104,7 +106,8 @@
           $ctrl.user = EqTornService.getUser();
 
           // Store the API Key in local storage.
-          if (localStorage && $ctrl.rememberApiKey) {
+          //if (localStorage && $ctrl.rememberApiKey) {
+          if (localStorage) {
             localStorage.setItem('apiKey', $ctrl.apiKey);
           };
 
@@ -120,6 +123,7 @@
       ).finally(
         function loginFinally() {
           $ctrl.logging = false;
+          $ctrl.ready = true;
         }
       );
     }
