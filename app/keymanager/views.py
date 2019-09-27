@@ -26,7 +26,7 @@ def tornauth(request):
                                                                         api_key=request.POST['apikey'],
                                                                         fsuser_id=login_user[0])
                     auth.login(request, login_user[0])
-                    return JsonResponse(data={'login': True, 'name': login_user[0].username})
+                    return JsonResponse(data={'login': True, 'name': login_user[0].username, 'tornid': api_account[0].torn_id})
                 else:
                     return JsonResponse(data={'login': False, 'error': 'Not in the righteous faction.'})
 
