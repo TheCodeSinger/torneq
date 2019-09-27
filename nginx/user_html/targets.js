@@ -19,21 +19,23 @@
     var $ctrl = this;
 
     // Pull last known filters from Local Storage.
-    var previousFilters =
-      localStorage && JSON.parse(localStorage.getItem('targetFilters'));
+    var previousFilters = localStorage && JSON.parse(localStorage.getItem('targetFilters'));
 
     _.assignIn($ctrl, {
       apiKey: localStorage && localStorage.getItem('apiKey'),
+      favorites: (localStorage && JSON.parse(localStorage.getItem('favorites'))) || {},
       filters: previousFilters || {
         // Default number of targets to fetch.
         targetCount: '10',
       },
+      hasLocalStorage: !!localStorage,
       targets: [],
 
       // Exposed methods.
       applyFilters: applyFilters,
       login: login,
       logout: logout,
+      toggleFavorite: toggleFavorite,
     });
 
     this.$onInit = function $onInit() {
@@ -138,6 +140,17 @@
       if (localStorage) {
         localStorage.removeItem('apiKey');
       }
+    }
+
+    /**
+     * Toggles whether the selected target is a favorite and updates local Storage.
+     *
+     * @method    toggleFavorite
+     * @param     {Object}   tornId   Torn ID of target.
+     */
+    function toggleFavorite(tornId) {
+      $ctrl.favorites[tornId] = !$ctrl.favorites[tornId];
+      localStorage.setItem('favorites', JSON.stringify($ctrl.favorites));
     }
   };
 

@@ -134,6 +134,11 @@
           ng-repeat="target in $ctrl.targets"
           ng-class="::{'text-muted': !target._isOkay}">
           <td>
+            <i ng-if="::$ctrl.hasLocalStorage"
+              class="fas fa-star fa-xs float-left pt-2 pr-1
+                {{$ctrl.favorites[target.torn_id] ? 'text-primary' : 'light-star'}}"
+              ng-click="$ctrl.toggleFavorite(target.torn_id)"
+              title="{{$ctrl.favorites[target.torn_id] ? 'Favorite target' : ''}}"></i>
             <a target="_target"
               ng-class="::{'text-muted': !target._isOkay}"
               href="https://www.torn.com/profiles.php?XID={{ target.torn_id }}">
@@ -173,3 +178,8 @@
     </table>
   </div>
 </div>
+
+<!-- <div class="bg-light text-left p-2">
+  Debugging:
+  <pre>{{$ctrl.favorites | json}}</pre>
+</div> -->
