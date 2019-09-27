@@ -105,7 +105,7 @@
 
           // Store the API Key in local storage.
           if (localStorage && $ctrl.rememberApiKey) {
-            localStorage.setItem('apiKey', parseInt($ctrl.apiKey, 10));
+            localStorage.setItem('apiKey', $ctrl.apiKey);
           };
 
           // If previous filters are available, then fetch targets,

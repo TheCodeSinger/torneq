@@ -260,7 +260,7 @@
      */
     function login(apiKey) {
       if (mockMode) {
-        var mockLoginResponse = { login: true, name: 'MockUser', id: 1234567 };
+        var mockLoginResponse = { login: true, name: 'MockUser', tornid: 1234567 };
         setUser(mockLoginResponse);
         return $q.resolve(mockLoginResponse);
       }
@@ -268,7 +268,7 @@
       return $http({
         method: 'post',
         url: fqdn + '/app/keymanager/tornauth',
-        params: { apikey: apiKey },
+        data: { apikey: apiKey },
       }).then(
         function loginApiSuccess(response) {
           response.data = response.data || {};
@@ -297,7 +297,7 @@
      */
     function setUser(user) {
       return cachedUser = {
-        id: user.id,
+        id: user.tornid,
         name: user.name,
       };
     }
