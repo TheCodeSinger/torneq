@@ -112,9 +112,9 @@
 
           // If previous filters are available, then fetch targets,
           // otherwise wait for user to specify parameters.
-          if ($ctrl.filters.minStats || $ctrl.filters.maxStats) {
+          /*if ($ctrl.filters.minStats || $ctrl.filters.maxStats) {
             applyFilters();
-          }
+          }*/
         },
         function loginFailure(response) {
           $ctrl.showLoginError = true;
