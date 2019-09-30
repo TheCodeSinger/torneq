@@ -49,17 +49,17 @@
     novalidate>
     <div class="mt-4 form-row">
       <div class="col">
-        <input type="number"
-          class="form-control d-inline ml-3 mt-1"
+        <!-- <input type="number"
+          class="form-control d-inline ml-3"
           style="width: 125px;"
           id="min-stats"
           name="minStats"
           aria-label="Minimum total stats"
           placeholder="Min stats"
-          ng-model="$ctrl.filters.minStats">
+          ng-model="$ctrl.filters.minStats"> -->
 
         <input type="number"
-          class="form-control d-inline ml-3 mt-1"
+          class="form-control d-inline ml-3"
           style="width: 125px;"
           id="max-stats"
           name="maxStats"
@@ -67,8 +67,18 @@
           placeholder="Max stats"
           ng-model="$ctrl.filters.maxStats">
 
+        <!-- <select name="faction"
+          class="custom-select form-control d-inline ml-3 mb-1"
+          style="width: 125px;"
+          matNativeControl
+          aria-label="Limit results to specified a faction."
+          ng-model="$ctrl.filters.factionId">
+          <option value="" selected>Any Faction</option>
+          <option value="10296">Kyokos</option>
+        </select> -->
+
         <select name="targetCount"
-          class="custom-select form-control d-inline ml-3 mb-1 mt-1"
+          class="custom-select form-control d-inline ml-3 mb-1"
           style="width: 125px;"
           matNativeControl
           aria-label="Number of Targets to display. Default is 10."
@@ -79,18 +89,28 @@
           <option value="20">20 Targets</option>
         </select>
 
-        <button class="btn btn-primary ml-3 mb-1 mt-1 d-inline" type="submit" ng-disabled="$ctrl.fetchingTargets">
+        <button class="btn btn-primary ml-3 mb-1 d-inline" type="submit" ng-disabled="$ctrl.fetchingTargets">
           <span ng-if="!$ctrl.fetchingTargets">Fetch Targets</span>
           <span ng-if="$ctrl.fetchingTargets" class="spinner-border spinner-border-sm"></span>
           <span ng-if="$ctrl.fetchingTargets">Fetching...</span>
         </button>
+
+        <!-- <div class="form-check form-check-inline ml-3">
+          <input class="form-check-input"
+            type="checkbox"
+            id="hide-unavailable"
+            name="hideUnavailable"
+            aria-label="Hide unavailble targets from the list"
+            ng-model="$ctrl.filters.hideUnavailable">
+          <label class="form-check-label" for="hide-unavailable">Hide Unavailable Targets</label>
+        </div> -->
       </div>
     </div>
   </form>
 
-  <div ng-if="!$ctrl.filtersApplied" class="mt-4 alert alert-info" role="alert">
-    Specify minimum or maximum total stats and click Fetch.
-  </div>
+  <!-- <div ng-if="!$ctrl.filtersApplied" class="mt-4 alert alert-info" role="alert">
+    Specify maximum total stats or a faction and click Fetch.
+  </div> -->
 
   <div ng-if="$ctrl.showServerError" class="mt-4 alert alert-danger" role="alert">
     There was an error retrieving data from the server.
@@ -169,7 +189,8 @@
           </td>
           <td ng-class="::{'eq-bg-warning': target._isActive,
             'eq-bg-danger': target._isVeryActive }">
-            <span class="d-none d-lg-inline">{{::target._LastAction}}</span>
+            <span class="d-none d-lg-inline"
+            ng-class="{'soft-critical': target.last_action_diff < 864000}">{{::target._LastAction}}</span>
             <span class="d-inline d-lg-none">{{::target._shortLastAction}}</span>
           </td>
           <td class="d-none d-md-table-cell">{{::target.status_updated_relative}}</td>
