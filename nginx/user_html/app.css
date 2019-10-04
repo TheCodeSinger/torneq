@@ -34,3 +34,7 @@
 .soft-critical {
   color: #8b0000;
 }
+
+.bg-color-enemy-faction {
+  background-color: #ffb3b785;
+}
