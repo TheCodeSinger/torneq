@@ -140,6 +140,7 @@
       // Clear the API Key from local storage.
       if (localStorage) {
         localStorage.removeItem('apiKey');
+        localStorage.removeItem('targetFilters');
       }
     }
 
