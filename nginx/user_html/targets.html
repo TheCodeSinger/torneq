@@ -142,8 +142,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-if="$ctrl.fetchingTargets"
-          ng-class="{'bg-color-enemy-faction': target.factionid === 10296}">
+        <tr ng-if="$ctrl.fetchingTargets">
           <td class="text-center" colspan="11">
             <i class="fas fa-3x fa-spinner fa-spin"></i>
           </td>
@@ -153,7 +152,9 @@
         </tr>
         <tr ng-if="!$ctrl.fetchingTargets && $ctrl.targets.length"
           ng-repeat="target in $ctrl.targets"
-          ng-class="::{'text-muted': !target._isOkay}">
+          ng-class="::{'text-muted': !target._isOkay,
+            'bg-color-enemy-faction':
+            !$ctrl.filters.factionId && target.factionid === 10296}">
           <td>
             <i ng-if="::$ctrl.hasLocalStorage"
               class="fas fa-star fa-xs float-left pt-2 pr-1
