@@ -81,6 +81,7 @@
 
       // Save latest filter values in local storage.
       if (localStorage) {
+        localStorage.removeItem('targetFilters');
         localStorage.setItem('targetFilters', JSON.stringify($ctrl.filters));
       }
 
