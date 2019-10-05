@@ -5,7 +5,7 @@ from keymanager import models as kmodels
 from celery import group
 
 
-def _async_stat_updates_(req, minStats: int, maxStats: int, targetCount: int):
+def _async_stat_updates_(req, minStats: int, maxStats: int, targetCount: int, factionId: int):
     accounts = kmodels.Account.objects.filter(api_ready=True)
     spy_reports = tmodels.SpyReport.objects.filter(archived=False)
 
@@ -18,6 +18,9 @@ def _async_stat_updates_(req, minStats: int, maxStats: int, targetCount: int):
         spy_reports = spy_reports.order_by('total')
     else:
         spy_reports = spy_reports.order_by('-total')
+
+    if factionId is not None:
+        spy_reports = spy_reports.filter(torn_id__factionId=factionId)
 
     spy_reports = spy_reports.select_related('torn_id')[:min(targetCount, settings.TORN_API_MAX_TARGET_RETURN)]
 
@@ -51,5 +54,11 @@ def targets_json_async(request):
     except (ValueError, TypeError):
         targetCount = 10
 
-    results = _async_stat_updates_(req=request, minStats=minStats, maxStats=maxStats, targetCount=targetCount)
+    try:
+        factionId = int(request.GET.get('factionId'))
+    except (ValueError, TypeError):
+        factionId = None
+
+    results = _async_stat_updates_(req=request, minStats=minStats, maxStats=maxStats, targetCount=targetCount,
+                                   factionId=factionId)
     return JsonResponse({'targets': results})
