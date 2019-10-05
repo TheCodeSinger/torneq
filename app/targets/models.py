@@ -55,6 +55,9 @@ class Target(models.Model):
     property_id = models.IntegerField(blank=True, null=True)
     last_action = models.BigIntegerField(blank=True, null=True)
     spouse = models.IntegerField(blank=True, null=True)
+    factionId = models.CharField(max_length=16, blank=True, null=True)
+    factionName = models.CharField(max_length=128, blank=True, null=True)
+    factionPosition = models.CharField(max_length=64, blank=True, null=True)
 
     @property
     def status_updated_relative(self):
@@ -138,6 +141,9 @@ class Target(models.Model):
         output['last_action'] = tmpprofile.get('last_action').get('timestamp')
         output['timestamp_hospital'] = tmpprofile.get('states', {}).get('hospital_timestamp', None)
         output['timestamp_jail'] = tmpprofile.get('states', {}).get('jail_timestamp', None)
+        output['factionId'] = tmpprofile.get('faction', {}).get('faction_id', None)
+        output['factionName'] = tmpprofile.get('faction', {}).get('faction_name', None)
+        output['factionPosition'] = tmpprofile.get('faction', {}).get('position', None)
         return output
 
 
@@ -180,7 +186,7 @@ def status_enum(status_text: str, ts_hospital: int, ts_jail: int) -> tuple:
 
 
 @celery.app.task
-def update_profile_job(target_pk, account_pk, update=True, wait=settings.TORN_API_RATE):
+def update_profile_job(target_pk, account_pk, update=False, wait=settings.TORN_API_RATE):
     target = Target.objects.get(pk=target_pk)
     account = kmModels.Account.objects.get(pk=account_pk)
     if target.status_updated:
@@ -224,6 +230,7 @@ def update_profile_job(target_pk, account_pk, update=True, wait=settings.TORN_AP
         'last_action_diff': target.last_action_diff,
         'status_updated_relative': target.status_updated_relative,
         'status_updated_diff': target.status_updated_diff,
+        'factionId': target.factionId,
     }
 
     if spyrep:
