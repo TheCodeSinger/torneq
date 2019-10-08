@@ -79,13 +79,25 @@
     function applyFilters(){
       $ctrl.filtersApplied = true;
 
+      // Ceate a new object in order to clean stale filter params from
+      // local storage. This means we have to update this object any
+      // time we add/remove filter params.
+      var newFilters = {
+        maxStats: $ctrl.filters.maxStats,
+        targetCount: $ctrl.filters.targetCount,
+
+        // Only add the following two params if those filters are visible.
+        factionId: $ctrl.showAdditionalFilters ? $ctrl.filters.factionId : undefined,
+        includeActive: $ctrl.showAdditionalFilters ? $ctrl.filters.includeActive : undefined,
+      };
+
       // Save latest filter values in local storage.
       if (localStorage) {
         localStorage.removeItem('targetFilters');
-        localStorage.setItem('targetFilters', JSON.stringify($ctrl.filters));
+        localStorage.setItem('targetFilters', JSON.stringify(newFilters));
       }
 
-      _getTargets($ctrl.filters);
+      _getTargets(newFilters);
     }
 
     /**

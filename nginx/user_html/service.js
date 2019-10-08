@@ -83,13 +83,19 @@
       target._speed = _humanizeStats(target.speed);
       target._defense = _humanizeStats(target.defense);
 
-      // Consider target active if last action was less than 30 days ago.
-      // 60 seconds * 60 minutes * 24 hours * 30 days = 2592000 seconds.
-      target._isActive = target.last_action_diff < 2592000;
+      // Consider target active if last action was less than 365 days ago.
+      // 60 seconds * 60 minutes * 24 hours * 365 days = 31,536,000 seconds.
+      target._isPossiblyActive = 2592000 < target.last_action_diff &&
+        target.last_action_diff <= 31536000;
 
-      // Consider target very active if last action was less than 14 days ago.
-      // 60 seconds * 60 minutes * 24 hours * 14 days = 1209600 seconds.
-      target._isVeryActive = target.last_action_diff < 1209600;
+      // Consider target active if last action was less than 30 days ago.
+      // 60 seconds * 60 minutes * 24 hours * 30 days = 2,592,000 seconds.
+      target._isRecentlyActive = 259200 < target.last_action_diff &&
+        target.last_action_diff <= 2592000;
+
+      // Consider target very active if last action was less than 7 days ago.
+      // 60 seconds * 60 minutes * 24 hours * 7 days = 604,800 seconds.
+      target._isVeryActive = target.last_action_diff <= 604800;
 
       // Scrub html from `status2`. We only need the name, not the <a> element.
       target._scrubbedReason = (target.status2 || '')

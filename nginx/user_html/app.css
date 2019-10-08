@@ -31,10 +31,26 @@
   color: #ddd;
 }
 
-.soft-critical {
+.soft-very-active {
   color: #8b0000;
 }
 
-.bg-color-enemy-faction {
+.soft-recently-active {
+  color: #8b6000;
+}
+
+.soft-possibly-active {
+  color: #838b00;
+}
+
+.bg-very-active {
   background-color: #ffb3b785;
+}
+
+.bg-recently-active {
+  background-color: #ffe0b385;
+}
+
+.bg-possibly-active {
+  background-color: #f6f7d485;
 }
