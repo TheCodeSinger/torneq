@@ -33,6 +33,8 @@
 
       // Exposed methods.
       applyFilters: applyFilters,
+      fetchNextPage: fetchNextPage,
+      fetchPreviousPage: fetchPreviousPage,
       login: login,
       logout: logout,
       toggleFavorite: toggleFavorite,
@@ -59,6 +61,10 @@
 
       EqTornService.fetchTargets(params).then(
         function getTargetsSuccess(targets) {
+          if ($ctrl.filters.minStats) {
+            _.reverse(targets)
+          }
+
           $ctrl.targets = targets;
         },
         function getTargetsFailure(response) {
@@ -66,7 +72,9 @@
         },
       ).finally(
         function getTargetsFinally() {
-          $ctrl.fetchingTargets = false;
+          $ctrl.fetchingTargets =
+          $ctrl.fetchingNextPage =
+          $ctrl.fetchingPreviousPage = false;
         }
       );
     }
@@ -79,10 +87,14 @@
     function applyFilters(){
       $ctrl.filtersApplied = true;
 
+      // Clear minStats if maxStats is set.
+      $ctrl.filters.minStats = !!$ctrl.filters.maxStats ? undefined : $ctrl.filters.minStats;
+
       // Ceate a new object in order to clean stale filter params from
       // local storage. This means we have to update this object any
       // time we add/remove filter params.
       var newFilters = {
+        minStats: $ctrl.filters.minStats,
         maxStats: $ctrl.filters.maxStats,
         targetCount: $ctrl.filters.targetCount,
 
@@ -165,6 +177,39 @@
     function toggleFavorite(tornId) {
       $ctrl.favorites[tornId] = !$ctrl.favorites[tornId];
       localStorage.setItem('favorites', JSON.stringify($ctrl.favorites));
+    }
+
+    /**
+     * Sets new maxStats equal to the stats of the current last
+     * target and fetches a new list.
+
+     * @method    fetchNextPage
+     */
+    function fetchNextPage() {
+      var numTargets = $ctrl.targets.length;
+      var lastTarget = $ctrl.targets[numTargets - 1];
+
+      $ctrl.filters.minStats = undefined;
+      $ctrl.filters.maxStats = lastTarget.total;
+
+      $ctrl.fetchingNextPage = true;
+
+      applyFilters();
+    }
+
+    /**
+     * Sets new minStats equal to the stats of the current first
+     * target and fetches a new list.
+
+     * @method    fetchPreviousPage
+     */
+    function fetchPreviousPage() {
+      $ctrl.filters.maxStats = undefined;
+      $ctrl.filters.minStats = $ctrl.targets[0].total;
+
+      $ctrl.fetchingPreviousPage = true;
+
+      applyFilters();
     }
   };
 
