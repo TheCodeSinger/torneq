@@ -53,22 +53,24 @@
       <div class="col">
 
         <!-- Min Stats -->
-        <!-- <input type="number"
+        <!-- <input type="text"
           class="form-control d-inline ml-3"
           style="width: 125px;"
           id="min-stats"
           name="minStats"
+          ng-keyup="$ctrl.onChangeInput($ctrl.filters.minStats, 'min-stats')"
           ng-if="$ctrl.showAdditionalFilters"
           aria-label="Minimum total stats"
           placeholder="Min stats"
           ng-model="$ctrl.filters.minStats"> -->
 
         <!-- Max Stats -->
-        <input type="number"
+        <input type="text"
           class="form-control d-inline ml-3"
           style="width: 125px;"
           id="max-stats"
           name="maxStats"
+          ng-keyup="$ctrl.onChangeInput($ctrl.filters.maxStats, 'max-stats')"
           aria-label="Maximum total stats"
           placeholder="Max stats"
           ng-model="$ctrl.filters.maxStats">

@@ -15,7 +15,7 @@
       });
   }
 
-  function TargetsCtrlFn(_, EqTornService) {
+  function TargetsCtrlFn(_, $scope, EqTornService) {
     var $ctrl = this;
 
     // Pull last known filters from Local Storage.
@@ -37,6 +37,7 @@
       fetchPreviousPage: fetchPreviousPage,
       login: login,
       logout: logout,
+      onChangeInput: _.debounce(parseInput, 150),
       toggleFavorite: toggleFavorite,
     });
 
@@ -85,6 +86,11 @@
      * @method    applyFilters
      */
     function applyFilters(){
+      // Validate input before fetching.
+      if (!/^[0-9]*$/.test($ctrl.filters.maxStats)) {
+        return;
+      }
+
       $ctrl.filtersApplied = true;
 
       // Clear minStats if maxStats is set.
@@ -210,6 +216,69 @@
       $ctrl.fetchingPreviousPage = true;
 
       applyFilters();
+    }
+
+    /**
+     * Validates the number inputs. We allow a format of number and
+     * optional letter unit.
+     *
+     * @example  '50' ==> '50'
+     * @example  '50k' ==> '50000'
+     * @example  '50m' ==> '50000000'
+     *
+     * @method   validateInput
+     * @return   {Boolean}   True if valid.
+     */
+    function validateInput(input, elementId) {
+      var valid = /^[0-9\.]*[hkmbt]?$/.test(input);
+      var formField = angular.element(document.querySelector('#' + elementId));
+
+      // Reset invalid class and then validate.
+      formField.removeClass('invalid');
+
+      if (!valid) {
+        // Invalid. Add invalid class.
+        formField.addClass('invalid');
+      }
+
+      return valid;
+    }
+
+    function parseInput(input, elementId) {
+      var units = {
+        h: 100,
+        k: 1000,
+        m: 1000000,
+        b: 1000000000,
+        t: 1000000000000,
+      }
+
+      if (!input || !validateInput(input, elementId)) {
+        // No input or invalid input.
+        return;
+      }
+
+      // Validation already verified the expected format of
+      // numbers + one letter. Split numbers from letter so
+      // we isolate the value and the unit.
+      var number = input.match(/[0-9\.]/g).join('');
+      var unit = (input.match(/[hkmbt]/g) || [])[0] ;
+      var scrubbed;
+
+      if (!unit && number[number.length - 1] !== '.') {
+        // If there is no letter unit and the last digit is
+        // a decimal point, then do nothing to it.
+        scrubbed = number;
+      } else {
+        // Multiply the number times the unit
+        scrubbed = number * (units[unit] || 1);
+      }
+
+      // Overwrite the value for the field input.
+      $ctrl.filters.maxStats = scrubbed;
+
+      // Fire a digest cycle on the latent change.
+      $scope.$apply();
     }
   };
 

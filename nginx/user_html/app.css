@@ -54,3 +54,7 @@
 .bg-possibly-active {
   background-color: #f6f7d485;
 }
+
+input.invalid {
+  border-color: red;
+}
