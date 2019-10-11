@@ -253,6 +253,10 @@
         t: 1000000000000,
       }
 
+      var number;
+      var unit;
+      var scrubbed;
+
       if (!input || !validateInput(input, elementId)) {
         // No input or invalid input.
         return;
@@ -261,18 +265,16 @@
       // Validation already verified the expected format of
       // numbers + one letter. Split numbers from letter so
       // we isolate the value and the unit.
-      var number = input.match(/[0-9\.]/g).join('');
-      var unit = (input.match(/[hkmbt]/g) || [])[0] ;
-      var scrubbed;
+      number = input.match(/[0-9\.]/g).join('');
+      unit = (input.match(/[hkmbt]/g) || [])[0] ;
 
-      if (!unit && number[number.length - 1] !== '.') {
-        // If there is no letter unit and the last digit is
-        // a decimal point, then do nothing to it.
-        scrubbed = number;
-      } else {
-        // Multiply the number times the unit
-        scrubbed = number * (units[unit] || 1);
+      if (!unit) {
+        // If there is no letter unit, then do nothing.
+        return;
       }
+
+      // Multiply the number times the unit
+      scrubbed = number * (units[unit] || 1);
 
       // Overwrite the value for the field input.
       $ctrl.filters.maxStats = scrubbed;
