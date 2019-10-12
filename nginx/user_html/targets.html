@@ -1,5 +1,12 @@
 <h1 class="mt-3">
   Leveling Targets
+  <a class="mb-1"
+    style="font-size: 20px;"
+    href="javascript:;"
+    ng-class="{'text-muted': $ctrl.showInstructions}"
+    ng-click="$ctrl.showInstructions = !$ctrl.showInstructions"><i
+      class="fas fa-info-circle" alt="About this tool"></i></a>
+
   <div style="font-size: 16px;" ng-if="$ctrl.user.login && $ctrl.user.name">
     for <a target="_torn" href="https://www.torn.com/profiles.php?XID={{$ctrl.user.tornid}}">{{$ctrl.user.name}}</a>
     &nbsp;
@@ -115,9 +122,9 @@
             type="checkbox"
             id="include-active"
             name="includeActive"
-            aria-label="Include active targets"
+            aria-label="Include active players"
             ng-model="$ctrl.filters.includeActive">
-          <label class="form-check-label" for="include-active">Include Active Targets</label>
+          <label class="form-check-label" for="include-active">Include Active Players</label>
         </div> -->
 
         <!-- Show/Hide Addition filters -->
@@ -135,6 +142,52 @@
       </div>
     </div>
   </form>
+
+  <!-- Instructions -->
+  <div ng-if="$ctrl.showInstructions" class="container text-left bg-light p-4">
+    <span class="ml-4 mb-4 float-right">
+      [<a href="javascript:;" ng-click="$ctrl.showInstructions = false">Hide</a>]
+    </span>
+    <h3>Instructions</h3>
+    <p>
+      This tool allows you to search our faction database of 400+ targets which are mostly <strong>inactive</strong> players, useful as leveling targets because we know their stats haven't changed from the original spy report.
+    </p>
+    <p>
+      The database also includes <strong>active</strong> players, and these are indicated by a colorized <strong>Last Action</strong> according to how recently they've been active: <span class="soft-very-active">red</span> (1 week), <span class="soft-recently-active">orange</span> (1 month), or <span class="soft-possibly-active">yellow</span> (1 year). By default, we hide active players from the results, but you may include them by checking the box <em>Include Active Players</em>. Note that spy reports for active players are probably out of date.
+    </p>
+
+    <p>Features:</p>
+    <ul>
+      <li>
+        See a list of targets and their spied stats, level, and date of last action.
+      </li>
+      <li>
+        See their status: OK, traveling, jailed/hospital, and how long until OK.
+      </li>
+      <li>
+        Clickable names to jump straight to their Torn profile page for convenient attacking.
+      </li>
+      <li>
+        Mark your favorites to remember for future reference. Click the star left of their name.
+      </li>
+      <li>
+        Torn-style number shortcuts: "2m" expands to "2000000".
+      </li>
+      <li>
+        Customizable page size, up to 50 targets.
+      </li>
+      <li>
+        Pagination: See the next/previous page of targets.
+      </li>
+    </ul>
+
+    <p class="pt-2">Notes:</p>
+    <ul>
+      <li>
+        Your settings are persistent, but they do not sync across devices or browsers. You will have to mark favorites in both places independently.
+      </li>
+    </ul>
+  </div>
 
   <div ng-if="$ctrl.showServerError" class="mt-4 alert alert-danger" role="alert">
     There was an error retrieving data from the server.
@@ -194,8 +247,11 @@
           </td>
           <td>
             <div title="{{::target._scrubbedReason}}">
-              <i class="fas fa-circle fa-xs text-success float-left pt-2 pr-1"
-                ng-class="::{'text-warning': target.status !== 'Okay'}"></i>
+              <i class="fas fa-circle fa-xs text-unavailable float-left pt-2 pr-1"
+                ng-class="::{
+                'text-success': target._isOkay,
+                'text-warning': target._isJailed || target._isHospitalized
+              }"></i>
               <span class="d-none d-lg-inline">{{::target.status}}</span>
               <span class="d-inline d-lg-none">{{::target._delayTime}}</span>
               <div class="d-none d-lg-block"><small>{{::target._scrubbedReason}}</small></div>

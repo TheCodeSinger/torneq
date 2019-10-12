@@ -141,7 +141,7 @@
             localStorage.setItem('apiKey', $ctrl.apiKey);
           };
 
-          // If previous filters are available, then fetch targets,
+          // If previous filters are available, then fetch targets immediately,
           // otherwise wait for user to specify parameters.
           /*if ($ctrl.filters.minStats || $ctrl.filters.maxStats) {
             applyFilters();

@@ -58,3 +58,7 @@
 input.invalid {
   border-color: red;
 }
+
+.text-unavailable {
+  color: #a6adb4;
+}
