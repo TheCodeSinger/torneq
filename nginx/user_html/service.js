@@ -21,7 +21,7 @@
     var secondsInDay = 24 * 60 * 60;
 
     // If not hosted on the primary domain, the use fqdn in endpoints.
-    var fqdn = window.location.href.indexOf('tctools.club') === -1 ? 'http://tctools.club' : '';
+    var fqdn = window.location.href.indexOf('torneq.com') === -1 ? 'http://torneq.com' : '';
 
     /**
      * Transforms a target by decorating with derived properties.
