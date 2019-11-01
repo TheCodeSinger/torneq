@@ -5,7 +5,7 @@ from keymanager import models as kmodels
 from celery import group
 
 
-def _async_stat_updates_(req, minStats: int, maxStats: int, targetCount: int, factionId: int):
+def _async_stat_updates_(req, minStats: int, maxStats: int, targetCount: int, factionId: int, includeActive: bool):
     accounts = kmodels.Account.objects.filter(api_ready=True)
     spy_reports = tmodels.SpyReport.objects.filter(archived=False)
 
@@ -21,6 +21,10 @@ def _async_stat_updates_(req, minStats: int, maxStats: int, targetCount: int, fa
 
     if factionId is not None:
         spy_reports = spy_reports.filter(torn_id__factionId=factionId)
+
+    if includeActive is not True:
+        # By default, exclude players who have been active within the past year.
+        spy_reports = spy_reports.filter(last_action__gte=31536000)
 
     spy_reports = spy_reports.select_related('torn_id')[:min(targetCount, settings.TORN_API_MAX_TARGET_RETURN)]
 
@@ -59,6 +63,11 @@ def targets_json_async(request):
     except (ValueError, TypeError):
         factionId = None
 
+    try:
+        includeActive = bool(request.GET.get('includeActive'))
+    except (ValueError, TypeError):
+        includeActive = False
+
     results = _async_stat_updates_(req=request, minStats=minStats, maxStats=maxStats, targetCount=targetCount,
-                                   factionId=factionId)
+                                   factionId=factionId, includeActive=includeActive)
     return JsonResponse({'targets': results})
