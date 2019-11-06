@@ -24,7 +24,7 @@ def _async_stat_updates_(req, minStats: int, maxStats: int, targetCount: int, fa
 
     if includeActive is not True:
         # By default, exclude players who have been active within the past year.
-        spy_reports = spy_reports.filter(last_action__gte=31536000)
+        spy_reports = spy_reports.filter(torn_id__last_action__gte=31536000)
 
     spy_reports = spy_reports.select_related('torn_id')[:min(targetCount, settings.TORN_API_MAX_TARGET_RETURN)]
 
