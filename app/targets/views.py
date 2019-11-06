@@ -22,9 +22,9 @@ def _async_stat_updates_(req, minStats: int, maxStats: int, targetCount: int, fa
     if factionId is not None:
         spy_reports = spy_reports.filter(torn_id__factionId=factionId)
 
-    if includeActive is not True:
+    if includeActive is False:
         # By default, exclude players who have been active within the past year.
-        spy_reports = spy_reports.filter(torn_id__status_updated_relative__gte=31536000)
+        spy_reports = spy_reports.filter(torn_id__last_action_relative__gte=31536000)
 
     spy_reports = spy_reports.select_related('torn_id')[:min(targetCount, settings.TORN_API_MAX_TARGET_RETURN)]
 
