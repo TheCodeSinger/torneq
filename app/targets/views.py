@@ -65,7 +65,7 @@ def targets_json_async(request):
         factionId = None
 
     try:
-        includeActive = bool(request.GET.get('includeActive'))
+        includeActive = bool(str(request.GET.get('includeActive')).lower() == 'true')
     except (ValueError, TypeError):
         includeActive = False
 
