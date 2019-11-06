@@ -21,14 +21,25 @@
     // Pull last known filters from Local Storage.
     var previousFilters = localStorage && JSON.parse(localStorage.getItem('targetFilters'));
 
+    var factionsMap = {
+      10296: {
+        name: 'Kyokos bedroom',
+      }
+    };
+
     _.assignIn($ctrl, {
       apiKey: localStorage && localStorage.getItem('apiKey'),
+      factionsMap: factionsMap,
       favorites: (localStorage && JSON.parse(localStorage.getItem('favorites'))) || {},
       filters: previousFilters || {
         // Default number of targets to fetch.
         targetCount: '10',
       },
       hasLocalStorage: !!localStorage,
+      showAdditionalFilters:
+        _.get(previousFilters, 'factionId') ||
+        _.get(previousFilters, 'minStats') ||
+        _.get(previousFilters, 'includeActive'),
       targets: [],
 
       // Exposed methods.
@@ -86,22 +97,37 @@
      * @method    applyFilters
      */
     function applyFilters(){
-      // Validate input before fetching.
-      if (!/^[0-9]*$/.test($ctrl.filters.maxStats)) {
+      var minStats = $ctrl.filters.minStats;
+      var maxStats = $ctrl.filters.maxStats;
+
+      // Validate minStats before fetching.
+      if (typeof minStats !== 'undefined' && !/^[0-9]*$/.test(minStats)) {
+        $ctrl.filtersForm.minStats.$setValidity('valid', false);
+        $ctrl.fetchingNextPage = $ctrl.fetchingPreviousPage = false;
+        return;
+      }
+
+      // Validate maxStats before fetching.
+      if (typeof maxStats !== 'undefined' && !/^[0-9]*$/.test(maxStats)) {
+        $ctrl.filtersForm.maxStats.$setValidity('valid', false);
+        $ctrl.fetchingNextPage = $ctrl.fetchingPreviousPage = false;
         return;
       }
 
       $ctrl.filtersApplied = true;
 
+      // Indicate whether filtered by a faction.
+      $ctrl.isFilteredByFaction = !!$ctrl.filters.factionId;
+
       // Clear minStats if maxStats is set.
-      $ctrl.filters.minStats = !!$ctrl.filters.maxStats ? undefined : $ctrl.filters.minStats;
+      minStats = !!maxStats ? undefined : minStats;
 
       // Ceate a new object in order to clean stale filter params from
       // local storage. This means we have to update this object any
       // time we add/remove filter params.
       var newFilters = {
-        minStats: $ctrl.filters.minStats,
-        maxStats: $ctrl.filters.maxStats,
+        minStats: minStats,
+        maxStats: maxStats,
         targetCount: $ctrl.filters.targetCount,
 
         // Only add the following two params if those filters are visible.
@@ -195,8 +221,8 @@
       var numTargets = $ctrl.targets.length;
       var lastTarget = $ctrl.targets[numTargets - 1];
 
-      $ctrl.filters.minStats = undefined;
       $ctrl.filters.maxStats = lastTarget.total;
+      $ctrl.filters.minStats = undefined;
 
       $ctrl.fetchingNextPage = true;
 
@@ -210,6 +236,7 @@
      * @method    fetchPreviousPage
      */
     function fetchPreviousPage() {
+      $ctrl.showAdditionalFilters = true;
       $ctrl.filters.maxStats = undefined;
       $ctrl.filters.minStats = $ctrl.targets[0].total;
 

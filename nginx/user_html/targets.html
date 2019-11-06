@@ -99,15 +99,17 @@
 
 <!-- Serach & Results -->
 <div ng-if="$ctrl.ready && $ctrl.user.login">
-  <form name="$ctrl.filtersForm"
+  <form class="mb-4"
+    name="$ctrl.filtersForm"
     ng-submit="$ctrl.applyFilters()"
     novalidate>
     <div class="mt-4 form-row">
       <div class="col">
 
         <!-- Min Stats -->
-        <!-- <input type="text"
+        <input type="text"
           class="form-control d-inline ml-3"
+          ng-class="{'bg-danger': $ctrl.filtersForm.minStats.$invalid}"
           style="width: 125px;"
           id="min-stats"
           name="minStats"
@@ -115,11 +117,12 @@
           ng-if="$ctrl.showAdditionalFilters"
           aria-label="Minimum total stats"
           placeholder="Min stats"
-          ng-model="$ctrl.filters.minStats"> -->
+          ng-model="$ctrl.filters.minStats">
 
         <!-- Max Stats -->
         <input type="text"
           class="form-control d-inline ml-3"
+          ng-class="{'bg-danger': $ctrl.filtersForm.maxStats.$invalid}"
           style="width: 125px;"
           id="max-stats"
           name="maxStats"
@@ -129,12 +132,13 @@
           ng-model="$ctrl.filters.maxStats">
 
         <!-- Faction Name -->
-        <select name="faction"
+        <select name="faction" id="faction-select"
           class="custom-select form-control d-inline ml-3 mb-1"
           style="width: 125px;"
           matNativeControl
           ng-if="$ctrl.showAdditionalFilters"
           aria-label="Limit results to specified a faction."
+          ng-change="$ctrl.filters.includeActive = !!$ctrl.filters.factionId"
           ng-model="$ctrl.filters.factionId">
           <option value="" selected>Any Faction</option>
           <option value="10296">Kyokos Bedroom</option>
@@ -162,7 +166,7 @@
         </button>
 
         <!-- Include Active Targets -->
-        <div class="form-check form-check-inline ml-3"
+        <div class="form-check form-check-inline ml-3 d-block d-sm-inline-block"
           ng-if="$ctrl.showAdditionalFilters">
           <input class="form-check-input"
             type="checkbox"
@@ -189,13 +193,15 @@
     </div>
   </form>
 
-  <div ng-if="$ctrl.showServerError" class="mt-4 alert alert-danger" role="alert">
+  <div ng-if="$ctrl.showServerError" class="mb-4 alert alert-danger" role="alert">
     There was an error retrieving data from the server.
     <br>
     If the issue persists, contact the faction API Developers.
   </div>
 
-  <div class="mt-4 table-responsive" ng-if="$ctrl.filtersApplied">
+  <h4 class="text-left" ng-if="$ctrl.isFilteredByFaction">Showing only <strong>{{::$ctrl.factionsMap[$ctrl.filters.factionId].name}}</strong></h4>
+
+  <div class="table-responsive" ng-if="$ctrl.filtersApplied">
     <table class="table table-hover table-striped table-bordered table-sm bg-light">
       <thead class="thead-light">
         <tr>
@@ -287,7 +293,7 @@
 
     <div ng-if="!$ctrl.fetchingTargets">
       <!-- Previous page -->
-      <!-- <button type="button"
+      <button type="button"
         class="btn btn-primary ml-3 mb-1 d-inline pull-left"
         xng-if="!$ctrl.fetchingTargets"
         ng-click="$ctrl.fetchPreviousPage();"
@@ -295,7 +301,7 @@
         <span ng-if="!$ctrl.fetchingPreviousPage">Previous Page</span>
         <span ng-if="$ctrl.fetchingPreviousPage" class="spinner-border spinner-border-sm"></span>
         <span ng-if="$ctrl.fetchingPreviousPage">Fetching...</span>
-      </button> -->
+      </button>
 
       <!-- Next page -->
       <button type="button"
