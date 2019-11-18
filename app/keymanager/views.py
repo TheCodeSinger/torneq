@@ -22,7 +22,7 @@ def tornauth(request):
             if 'error' in results.json():
                 return JsonResponse(data=results.json())
             elif 'player_id' in results.json():
-                if results.json()['faction']['faction_name'] in eqFactionIds:
+                if results.json()['faction']['faction_id'] in eqFactionIds:
                     login_user = User.objects.get_or_create(username=results.json()['name'])
                     api_account = kmodels.Account.objects.get_or_create(torn_id=results.json()['player_id'],
                                                                         torn_name=results.json()['name'],
