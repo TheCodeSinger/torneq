@@ -52,6 +52,12 @@
       toggleFavorite: toggleFavorite,
     });
 
+    /**
+     * Always default to 10 targets because it's better performance.
+     * User can always change it back.
+     */
+    $ctrl.filters.targetCount = '10';
+
     this.$onInit = function $onInit() {
       // If API Key was saved, then log in user.
       if($ctrl.apiKey) {
