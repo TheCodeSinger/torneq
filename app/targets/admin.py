@@ -4,7 +4,8 @@ from . import models
 
 @admin.register(models.Target)
 class TargetAdmin(admin.ModelAdmin):
-    list_display = ['torn_id', 'torn_name', 'status', 'status2', 'added', 'last_action', 'status_updated']
+    list_display = ['torn_id', 'torn_name', 'factionId', 'factionName', 'status', 'status2', 'added', 'last_action', 'status_updated']
+    search_fields = ['torn_id', 'torn_name', 'factionId', 'factionName']
 
     def has_change_permission(self, request, obj=None):
         return False
