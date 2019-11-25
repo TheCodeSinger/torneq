@@ -10,9 +10,9 @@ class AccountAdmin(admin.ModelAdmin):
 
 
     def get_readonly_fields(self, request, obj=None):
-        if request.user.is_superuser:
+        if obj is None:
             return self.readonly_fields
-        return self.readonly_fields + ['fsuser_id']
+        return self.readonly_fields + ['fsuser_id', 'api_key']
 
 
     def get_queryset(self, request):
@@ -24,7 +24,7 @@ class AccountAdmin(admin.ModelAdmin):
 
 @admin.register(models.APILog)
 class APILogAdmin(admin.ModelAdmin):
-    list_display = ['url', 'status_code', 'account', 'key', 'activity_time', 'originating_ip']
+    list_display = ['url', 'user_requested', 'status_code', 'account', 'key', 'activity_time', 'originating_worker']
 
     def has_delete_permission(self, request, obj=None):
         return False
