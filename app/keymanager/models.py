@@ -56,31 +56,34 @@ class Account(models.Model):
     def __str__(self):
         return self.torn_id
 
-    def __api_call__(self, endpoint, selections, override=False):
+    def __api_call__(self, endpoint, selections, override=False, user_requested=None):
         try:
             if self.api_ready or override:
                 results = requests.get(url=f"""{settings.TORN_API_BASE_URL}{endpoint}?selections={selections}&key={self.api_key}""")
                 APILog(
-                    originating_ip=socket.gethostname(),
+                    originating_worker=socket.gethostname(),
                     account=self,
                     key=self.api_key,
+                    user_requested=user_requested,
                     status_code=results.status_code,
                     url=results.request.url,
                     body=results.text,
                 ).save()
                 if results.json().get('error'):
                     self.api_ready = False
-                    self.api_status = results.json().get('error').get('error')
+                    self.api_status = results.json().get('error', {}).get('error')
                     raise APINotReadyException('API Call resulted in error ' + results.json().get('error', {}).get('error'))
             else:
                 raise APINotReadyException
         except KeyManagerException as errobj:
             if 'Incorrect key' in str(errobj):
                 self.api_ready = False
-                self.api_status = 'Incorrect key'
+                self.api_status = 'Error: Incorrect key'
+                self.save()
             else:
                 self.api_ready = False
                 self.api_status = 'UNK Error from API'
+                self.save()
 
         return results or {}
 
@@ -112,8 +115,9 @@ class Account(models.Model):
 
 class APILog(models.Model):
     activity_time = models.DateTimeField(auto_now_add=True, db_index=True)
-    originating_ip = models.CharField(max_length=64, blank=True)
+    originating_worker = models.CharField(max_length=64, blank=True)
     account = models.ForeignKey(Account, on_delete=models.PROTECT)
+    user_requested = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     key = models.CharField(max_length=64)
     status_code = models.CharField(max_length=16, blank=True)
     url = models.CharField(max_length=128, blank=True)
