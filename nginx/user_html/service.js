@@ -217,7 +217,7 @@
       }, params);
       return $http({
         method: 'get',
-        url: fqdn + '/app/targets/json',
+        url: '/app/targets/json',
         params: params
       }).then(
         function fetchTargetsSuccess(response) {
@@ -267,7 +267,7 @@
 
       return $http({
         method: 'post',
-        url: fqdn + '/app/keymanager/tornauth',
+        url: '/app/keymanager/tornauth',
         data: { apikey: apiKey },
       }).then(
         function loginApiSuccess(response) {
