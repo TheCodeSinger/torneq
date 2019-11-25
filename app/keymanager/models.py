@@ -99,21 +99,17 @@ class Account(models.Model):
                 if request.json().get('error'):
                     self.api_status = f"""Error: {request.json().get('error').get('error')}"""
                     self.api_ready = False
-                    self.save()
                     return False
                 elif request.status_code == 200 and request.json().get('timestamp'):
                     self.api_status = 'Active'
                     self.api_ready = True
-                    self.save()
                     return True
                 else:
                     self.api_status = 'Unknown error'
                     self.api_ready = False
-                    self.save()
                     return False
         self.api_ready = False
         self.api_status = "No Key"
-        self.save()
         return False
 
 
