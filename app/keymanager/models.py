@@ -15,6 +15,10 @@ class KeyManagerException(Exception):
 class APINotReadyException(KeyManagerException):
     pass
 
+class APIKeyIncorrect(KeyManagerException):
+    """The key provided is incorrect or is now invalid"""
+    pass
+
 
 class NextKeyManager(models.Manager):
     def get_queryset(self):
@@ -38,34 +42,48 @@ class Account(models.Model):
         permissions = [('generate_updates', 'Can cause target updates'),
                        ('generate_updates_override', 'Will always trigger target updates')]
 
+    def save(self, verify=False, *args, **kwargs):
+        if verify is True or self.pk is None:
+            can_generate_updates_perm = Permission.objects.get(codename='generate_updates')
+            valid_key = self.test_key_validity()
+            if valid_key:
+                if self.fsuser_id is not None:
+                    self.fsuser_id.user_permissions.add(can_generate_updates_perm)
+            else:
+                self.fsuser_id.user_permissions.remove(can_generate_updates_perm)
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.torn_id
 
-    def __api_call__(self, endpoint, selections, override=False):
+    def __api_call__(self, endpoint, selections, override=False, user_requested=None):
         try:
             if self.api_ready or override:
                 results = requests.get(url=f"""{settings.TORN_API_BASE_URL}{endpoint}?selections={selections}&key={self.api_key}""")
                 APILog(
-                    originating_ip=socket.gethostname(),
+                    originating_worker=socket.gethostname(),
                     account=self,
                     key=self.api_key,
+                    user_requested=user_requested,
                     status_code=results.status_code,
                     url=results.request.url,
                     body=results.text,
                 ).save()
                 if results.json().get('error'):
                     self.api_ready = False
-                    self.api_status = results.json().get('error').get('error')
+                    self.api_status = results.json().get('error', {}).get('error')
                     raise APINotReadyException('API Call resulted in error ' + results.json().get('error', {}).get('error'))
             else:
                 raise APINotReadyException
         except KeyManagerException as errobj:
             if 'Incorrect key' in str(errobj):
                 self.api_ready = False
-                self.api_status = 'Incorrect key'
+                self.api_status = 'Error: Incorrect key'
+                self.save()
             else:
                 self.api_ready = False
                 self.api_status = 'UNK Error from API'
+                self.save()
 
         return results or {}
 
@@ -97,8 +115,9 @@ class Account(models.Model):
 
 class APILog(models.Model):
     activity_time = models.DateTimeField(auto_now_add=True, db_index=True)
-    originating_ip = models.CharField(max_length=64, blank=True)
+    originating_worker = models.CharField(max_length=64, blank=True)
     account = models.ForeignKey(Account, on_delete=models.PROTECT)
+    user_requested = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     key = models.CharField(max_length=64)
     status_code = models.CharField(max_length=16, blank=True)
     url = models.CharField(max_length=128, blank=True)
@@ -107,17 +126,5 @@ class APILog(models.Model):
     class Meta:
         get_latest_by = ['activity_time']
 
-
-@receiver(pre_save, sender=Account)
-def test_key_on_save(sender, instance, **kwargs):
-    can_generate_updates_perm = Permission.objects.get(codename='generate_updates')
-    requser = instance.fsuser_id
-    valid_key = instance.test_key_validity()
-    if valid_key:
-        if instance.fsuser_id is not None:
-            requser.user_permissions.add(can_generate_updates_perm)
-    else:
-        requser.user_permissions.remove(can_generate_updates_perm)
-    requser.save()
 
 
