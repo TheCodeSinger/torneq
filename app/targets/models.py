@@ -207,7 +207,7 @@ def import_report(target_id: str, level: int, strength: int, defense: int, speed
 
 def parse_pasted_reports(input: str):
     for line in input.splitlines():
-        linevars = line.split(sep='\t')
+        linevars = line.split(sep=' ')
         result = import_report(*linevars)
         print(result)
 
