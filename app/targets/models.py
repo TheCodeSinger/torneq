@@ -185,6 +185,26 @@ def status_enum(status_text: str, ts_hospital: int, ts_jail: int) -> tuple:
         return 9, 999999
 
 
+def import_report(target_id: str, level: int, strength: int, defense: int, speed: int, dexterity: int, total: int,
+                  original_report_date: str):
+    # Get/Create target ID
+    target = Target.objects.get_or_create(torn_id=target_id)
+
+    # Convert date
+    report_date = dt.datetime.strptime(original_report_date, '%Y-%m-%d')
+
+    # Insert report
+    result = SpyReport.objects.create(date_spied=report_date,
+                                      torn_id=target,
+                                      level=level,
+                                      strength=strength,
+                                      defense=defense,
+                                      speed=speed,
+                                      dexterity=dexterity,
+                                      total=total)
+    return result
+
+
 @celery.app.task
 def update_profile_job(target_pk, account_pk, update=False, wait=settings.TORN_API_RATE):
     target = Target.objects.get(pk=target_pk)
