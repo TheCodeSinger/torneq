@@ -205,6 +205,13 @@ def import_report(target_id: str, level: int, strength: int, defense: int, speed
     return result
 
 
+def parse_pasted_reports(input: str):
+    for line in input.splitlines():
+        linevars = line.split(sep='\t')
+        result = import_report(*linevars)
+        print(result)
+
+
 @celery.app.task
 def update_profile_job(target_pk, account_pk, update=False, wait=settings.TORN_API_RATE):
     target = Target.objects.get(pk=target_pk)
