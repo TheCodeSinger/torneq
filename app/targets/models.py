@@ -195,7 +195,7 @@ def import_report(target_id: str, level: int, strength: int, defense: int, speed
 
     # Insert report
     result = SpyReport.objects.create(date_spied=report_date,
-                                      torn_id=target,
+                                      torn_id=target[0],
                                       level=level,
                                       strength=strength,
                                       defense=defense,
