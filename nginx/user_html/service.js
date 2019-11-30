@@ -21,7 +21,7 @@
     var secondsInDay = 24 * 60 * 60;
 
     // If not hosted on the primary domain, the use fqdn in endpoints.
-    var fqdn = window.location.href.indexOf('torneq.com') === -1 ? 'http://torneq.com' : '';
+    var fqdn = window.location.href.indexOf('closes.org') > -1 ? 'http://torneq.com' : '';
 
     /**
      * Transforms a target by decorating with derived properties.
@@ -217,7 +217,7 @@
       }, params);
       return $http({
         method: 'get',
-        url: '/app/targets/json',
+        url: fqdn + '/app/targets/json',
         params: params
       }).then(
         function fetchTargetsSuccess(response) {
@@ -267,7 +267,7 @@
 
       return $http({
         method: 'post',
-        url: '/app/keymanager/tornauth',
+        url: fqdn + '/app/keymanager/tornauth',
         data: { apikey: apiKey },
       }).then(
         function loginApiSuccess(response) {

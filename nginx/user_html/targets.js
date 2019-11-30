@@ -23,8 +23,15 @@
 
     var factionsMap = {
       10296: {
+        // Now EQ2
         name: 'Kyokos bedroom',
-      }
+      },
+      9047: {
+        name: 'DarkHearts',
+      },
+      42951: {
+        name: 'Poos\' GoM Island',
+      },
     };
 
     _.assignIn($ctrl, {
