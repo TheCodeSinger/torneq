@@ -121,8 +121,8 @@ class Target(models.Model):
 
         output['torn_name'] = tmpprofile.get('name')
         try:
-            output['status'] = tmpprofile.get('status')[0]
-            output['status2'] = tmpprofile.get('status')[1]
+            output['status'] = tmpprofile.get('status').get('0')
+            output['status2'] = tmpprofile.get('status').get('1')
         except IndexError:
             pass
         output['life_current'] = tmpprofile.get('life').get('current')
