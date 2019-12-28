@@ -120,11 +120,10 @@ class Target(models.Model):
         output = dict()
 
         output['torn_name'] = tmpprofile.get('name')
-        try:
-            output['status'] = tmpprofile.get('status').get('0')
-            output['status2'] = tmpprofile.get('status').get('1')
-        except IndexError:
-            pass
+        output['status_desc'] = tmpprofile.get('status').get('description')
+        output['status_details'] = tmpprofile.get('status').get('details')
+        output['status_state'] = tmpprofile.get('status').get('state')
+        output['status_timeuntil'] = tmpprofile.get('status').get('until')
         output['life_current'] = tmpprofile.get('life').get('current')
         output['life_max'] = tmpprofile.get('life').get('maximum')
         output['status_updated'] = make_aware(dt.datetime.utcnow())
@@ -247,10 +246,13 @@ def update_profile_job(target_pk, account_pk, update=False, wait=settings.TORN_A
         'life_current': target.life_current,
         'life_max': target.life_max,
         'rank': target.rank,
-        'status_enum': status_enum(target.status, target.timestamp_hospital, target.timestamp_jail)[0],
-        'status_delay_sec': status_enum(target.status, target.timestamp_hospital, target.timestamp_jail)[1],
-        'status': target.status,
-        'status2': target.status2,
+        'status_enum': status_enum(target.status_desc, target.timestamp_hospital, target.timestamp_jail)[0],
+        'status_delay_sec': status_enum(target.status_desc, target.timestamp_hospital, target.timestamp_jail)[1],
+        'status': target.status_desc,
+        'status2': target.status_details,
+        'status_desc': target.status_desc,
+        'status_details': target.status_details,
+        'status_state': target.status_state,
         'torn_id': target.torn_id,
         'torn_name': target.torn_name,
         'last_action_relative': target.last_action_relative,
