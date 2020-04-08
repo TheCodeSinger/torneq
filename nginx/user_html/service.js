@@ -98,8 +98,10 @@
       target._isVeryActive = target.last_action_diff <= 604800;
 
       // Scrub html from `status2`. We only need the name, not the <a> element.
+      // example:
+      //  Attacked by <a href = "http://www.torn.com/profiles.php?XID=2514253">ThepeAnutz</a>
       target._scrubbedReason = (target.status2 || '')
-        .replace(/<a href=\"profiles\.php\?XID=\d*\">(.*)<\/a>/, '$1');
+        .replace(/<a href\s?=\s?\".*profiles\.php\?XID=\d*\">(.*)<\/a>/, '$1');
 
       return target;
     }
