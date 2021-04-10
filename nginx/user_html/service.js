@@ -11,6 +11,7 @@
 
     // Publicly exposed service methods.
     var EqTornService = {
+      fetchAuditLogs: fetchAuditLogs,
       fetchTargets: fetchTargets,
       hideLi: hideLi,
       login: login,
@@ -274,6 +275,57 @@
       }).then(
         function loginApiSuccess(response) {
           return response.data || {};
+        }
+      );
+    }
+
+    /**
+     * Requests a list of Audit Logs.
+     *
+     * @method    fetchAuditLogs
+     * @param     {Object}   [params]   Optional request params.
+     * @return    {Object}   Promise to resolve the API request.
+     */
+    function fetchAuditLogs(params) {
+      params = angular.merge({}, params);
+
+      if (mockMode) {
+        var mockAuditLogsJsonResponse = {
+          "data": {
+            "auditLogs": [
+              {
+                "timestamp": 1617951818,
+                "news": "<a href = http://www.torn.com/profiles.php?XID=2273492>Yup</a> was given $10,000,000 by <a href = http://www.torn.com/profiles.php?XID=2273492>Yup</a>."
+              },
+              {
+                "timestamp": 1617810788,
+                "news": "<a href = http://www.torn.com/profiles.php?XID=2536918>Twistedfury</a> was given $1,000,000 by <a href = http://www.torn.com/profiles.php?XID=1118257>Metallistar</a>."
+              },
+              {
+                "timestamp": 1617739160,
+                "news": "<a href = http://www.torn.com/profiles.php?XID=2273492>Yup</a> was given $10,000,000 by <a href = http://www.torn.com/profiles.php?XID=2273492>Yup</a>."
+              },
+              {
+                "timestamp": 1617723196,
+                "news": "<a href = http://www.torn.com/profiles.php?XID=2587336>Last_Sin</a> was given $382,000,000 by <a href = http://www.torn.com/profiles.php?XID=2273492>Yup</a>."
+              },
+              {
+                "timestamp": 1617718706,
+                "news": "<a href = \"http://www.torn.com/profiles.php?XID=2587336\">Last_Sin</a> deposited $382,000,000"
+              },
+            ],
+          }
+        };
+        return $q.resolve(mockAuditLogsJsonResponse.data.auditLogs);
+      }
+
+      return $http({
+        method: 'get',
+        url: fqdn + '/app/auditlogs/json',
+        params: params
+      }).then(
+        function fetchAuditLogsSuccess(response) {
+          return response.data.auditlogs || [];
         }
       );
     }

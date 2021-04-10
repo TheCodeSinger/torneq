@@ -6,20 +6,25 @@
 
     <title>Equilibrium</title>
 
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans" />
+    <link rel="stylesheet" href="app.css">
+
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular-sanitize.js"></script>    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/1.0.22/angular-ui-router.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.min.js"></script>
+	  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-smart-table/2.1.8/smart-table.min.js"></script>
     <script src="app.js" type="text/javascript"></script>
     <script src="service.js" type="text/javascript"></script>
     <script src="home.js" type="text/javascript"></script>
     <script src="targets.js" type="text/javascript"></script>
     <script src="resources.js" type="text/javascript"></script>
     <script src="contact.js" type="text/javascript"></script>
-
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
-    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.css">
-    <link rel="stylesheet" href="app.css">
+    <script src="audit.js" type="text/javascript"></script>
 
     <style>
       body {
@@ -52,6 +57,10 @@
           <a class="py-2 px-2 d-inline-block"
             ui-sref="targets"
             ng-class="{'active': window.location.hash.indexOf('targets')}">Targets</a>
+
+          <a class="py-2 px-2 d-inline-block"
+            ui-sref="audit"
+            ng-class="{'active': window.location.hash.indexOf('audit')}">Audit Logs</a>
 
           <!-- <a class="py-2 px-2 d-inline-block"
             ui-sref="resources"

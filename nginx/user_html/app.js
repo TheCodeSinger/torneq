@@ -1,7 +1,7 @@
 (function (angular, undefined) {
    'use strict';
 
-  angular.module('EqTornApp', ['ui.router'])
+  angular.module('EqTornApp', ['ui.router', 'ngSanitize'])
     .constant('_', window._)
     .config(configFn)
     .controller('MainCtrl', MainCtrlFn);
