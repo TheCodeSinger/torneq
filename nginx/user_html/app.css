@@ -62,3 +62,26 @@ input.invalid {
 .text-unavailable {
   color: #a6adb4;
 }
+
+
+/*
+ * Tables
+ */
+.time-column {
+  width: 20rem;
+}
+
+
+th.sortable {
+    cursor: pointer;
+}
+.st-sort-ascent:after {
+    font-family: FontAwesome;
+    content: '  \f0de';
+    color: black;
+}
+.st-sort-descent:after{
+    font-family: FontAwesome;
+    content: '  \f0dd';
+    color: black;
+}

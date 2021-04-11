@@ -153,15 +153,18 @@
     If the issue persists, contact the faction API Developers.
   </div>
 
-  <div class="table-responsive" ng-if="$ctrl.filtersApplied && !$ctrl.showServerError">
-    <h4 class="text-left">Showing logs for <strong>{{::$ctrl.factionsMap[$ctrl.filters.factionId].name}}</strong></h4>
+  <div class="table-responsive text-left" ng-if="$ctrl.filtersApplied && !$ctrl.showServerError">
+    <h4>Showing logs for 
+      <strong>{{::$ctrl.factionsMap[$ctrl.filters.factionId].name}}</strong>
+    </h4>
 
-    <table st-table="$ctrl.auditLogs"
-      class="table table-hover table-striped table-bordered table-sm bg-light text-left">
+    <table st-table="displayedAuditLogs" 
+      st-safe-src="$ctrl.auditLogs"
+      class="table table-hover table-striped table-bordered table-sm bg-light">
       <thead>
         <tr>
-          <th st-sort="timestamp">Time</th>
-          <th st-sort="news">Description</th>
+          <th st-sort="timestamp" st-sort-default="reverse" st-skip-natural="true" class="sortable time-column">Time</th>
+          <th>Description</th>
         </tr>
         <tr>
           <th></th>
@@ -174,7 +177,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="row in $ctrl.auditLogs">
+        <tr ng-repeat="row in displayedAuditLogs">
           <td>{{$ctrl.moment.unix(row.timestamp)}}</td>
           <td ng-bind-html="row.news"></td>
         </tr>
