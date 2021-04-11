@@ -7,7 +7,7 @@
   function EqTornServiceFn($q, $http) {
 
     // Set true to return mock API responses.
-    var mockMode = false;
+    var mockMode = true;
 
     // Publicly exposed service methods.
     var EqTornService = {
@@ -287,7 +287,11 @@
      * @return    {Object}   Promise to resolve the API request.
      */
     function fetchAuditLogs(params) {
-      params = angular.merge({}, params);
+      const queryParams = {
+        // Default to last 7 days.
+        start: params.start || moment().subtract(7,'d'),
+        end: params.end || moment(),
+      };
 
       if (mockMode) {
         var mockAuditLogsJsonResponse = {
@@ -321,8 +325,8 @@
 
       return $http({
         method: 'get',
-        url: fqdn + '/app/auditlogs/json',
-        params: params
+        url: fqdn + `/api/v1/history/faction/{{params.factionName}}/{{params.type}}`,
+        params: queryParams
       }).then(
         function fetchAuditLogsSuccess(response) {
           return response.data.auditlogs || [];
