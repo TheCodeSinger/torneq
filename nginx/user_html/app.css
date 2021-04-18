@@ -6,7 +6,6 @@
 /*
  * Translucent site header
  */
-
 .site-header {
   background-color: rgba(0, 0, 0, .85);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
@@ -73,19 +72,18 @@ input.invalid {
 
 
 th.sortable {
-    cursor: pointer;
+  cursor: pointer;
 }
 .st-sort-ascent:after {
-    font-family: FontAwesome;
-    content: '  \f0de';
-    color: black;
+  font-family: FontAwesome;
+  content: '  \f0de';
+  color: black;
 }
 .st-sort-descent:after{
-    font-family: FontAwesome;
-    content: '  \f0dd';
-    color: black;
+  font-family: FontAwesome;
+  content: '  \f0dd';
+  color: black;
 }
 
 #date-range.form-control {
-  width: 16rem;
-}
+ width: 16rem;

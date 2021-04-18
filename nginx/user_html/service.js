@@ -102,7 +102,7 @@
       // example:
       //  Attacked by <a href = "http://www.torn.com/profiles.php?XID=2514253">ThepeAnutz</a>
       target._scrubbedReason = (target.status2 || '')
-        .replace(/<a href\s?=\s?\".*profiles\.php\?XID=\d*\">(.*)<\/a>/, '$1');
+        .replace(/<a href\s?=\s?.*profiles\.php\?XID=\d*>(.*)<\/a>/, '$1');
 
       return target;
     }
@@ -287,6 +287,8 @@
      * @return    {Object}   Promise to resolve the API request.
      */
     function fetchAuditLogs(params) {
+      console.log(params);
+
       const queryParams = {
         // Default to last 7 days.
         start: params.start || moment().subtract(7,'d'),
@@ -315,26 +317,26 @@
               },
               {
                 "timestamp": 1617718706,
-                "news": "<a href = \"http://www.torn.com/profiles.php?XID=2587336\">Last_Sin</a> deposited $382,000,000"
+                "news": "<a href = http://www.torn.com/profiles.php?XID=2587336>Last_Sin</a> deposited $382,000,000"
               },
               {
-                "news": "\"<a href = \\\"http://www.torn.com/profiles.php?XID=2307055\\\">St-Finn</a> filled one of the faction's Empty Blood Bag items.\"",
+                "news": "<a href = http://www.torn.com/profiles.php?XID=2307055>St-Finn</a> filled one of the faction's Empty Blood Bag items.",
                 "timestamp": "1618183539"
               },
               {
-                "news": "\"<a href = \\\"http://www.torn.com/profiles.php?XID=2307055\\\">St-Finn</a> filled one of the faction's Empty Blood Bag items.\"",
+                "news": "<a href = http://www.torn.com/profiles.php?XID=2307055>St-Finn</a> filled one of the faction's Empty Blood Bag items.",
                 "timestamp": "1618183537"
               },
               {
-                "news": "\"<a href = \\\"http://www.torn.com/profiles.php?XID=2300097\\\">Giggin</a> filled one of the faction's Empty Blood Bag items.\"",
+                "news": "<a href = http://www.torn.com/profiles.php?XID=2300097>Giggin</a> filled one of the faction's Empty Blood Bag items.",
                 "timestamp": "1618179696"
               },
               {
-                "news": "\"<a href = \\\"http://www.torn.com/profiles.php?XID=2300097\\\">Giggin</a> filled one of the faction's Empty Blood Bag items.\"",
+                "news": "<a href = http://www.torn.com/profiles.php?XID=2300097>Giggin</a> filled one of the faction's Empty Blood Bag items.",
                 "timestamp": "1618179695"
               },
               {
-                "news": "\"<a href = \\\"http://www.torn.com/profiles.php?XID=2300097\\\">Giggin</a> filled one of the faction's Empty Blood Bag items.\"",
+                "news": "<a href = http://www.torn.com/profiles.php?XID=2300097>Giggin</a> filled one of the faction's Empty Blood Bag items.",
                 "timestamp": "1618179694"
               },
             ],
