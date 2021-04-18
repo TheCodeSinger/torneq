@@ -41,7 +41,7 @@
       factionsMap: factionsMap,
       filters: previousFilters || {
         factionId: '9524',
-        type: 'mainnewsfull',
+        type: 'fundsnews',
       },
       hasLocalStorage: !!localStorage,
       itemsByPage: 10,
@@ -52,6 +52,33 @@
       login: login,
       logout: logout,
     });
+
+    // Model for Date Range component.
+    $ctrl.dateRange = {
+      startDate: moment().subtract(6, "days"),
+      endDate: moment(),
+    };
+
+    // Options for Date Range component.
+    $ctrl.opts = {
+      locale: {
+        applyClass: 'btn-green',
+        applyLabel: "Apply",
+        fromLabel: "From",
+        format: "MMM D, YYYY",
+        toLabel: "To",
+        cancelLabel: 'Cancel',
+        customRangeLabel: 'Custom range',
+      },
+      ranges: {
+        'Today': [moment().startOf('day'), moment()],
+        'Yesterday': [moment().subtract(1, 'days').startOf('day'), moment().subtract(1, 'days').endOf('day')],
+        'Past 7 Days': [moment().subtract(6, 'days'), moment()],
+        'Past 30 Days': [moment().subtract(29, 'days'), moment()],
+        'This Month': [moment().startOf('month'), moment().endOf('month')],
+        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+      }
+    };
 
     this.$onInit = function $onInit() {
       // If API Key was saved, then log in user.
@@ -100,6 +127,8 @@
       var newFilters = {
         factionId: $ctrl.filters.factionId,
         type: $ctrl.filters.type,
+        start: $ctrl.dateRange.startDate.unix(),
+        end: $ctrl.dateRange.endDate.unix(),
       };
 
       // Save latest filter values in local storage.

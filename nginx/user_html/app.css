@@ -85,3 +85,7 @@ th.sortable {
     content: '  \f0dd';
     color: black;
 }
+
+#date-range.form-control {
+  width: 16rem;
+}

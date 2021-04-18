@@ -7,7 +7,7 @@
   function EqTornServiceFn($q, $http) {
 
     // Set true to return mock API responses.
-    var mockMode = true;
+    var mockMode = false;
 
     // Publicly exposed service methods.
     var EqTornService = {
@@ -317,6 +317,26 @@
                 "timestamp": 1617718706,
                 "news": "<a href = \"http://www.torn.com/profiles.php?XID=2587336\">Last_Sin</a> deposited $382,000,000"
               },
+              {
+                "news": "\"<a href = \\\"http://www.torn.com/profiles.php?XID=2307055\\\">St-Finn</a> filled one of the faction's Empty Blood Bag items.\"",
+                "timestamp": "1618183539"
+              },
+              {
+                "news": "\"<a href = \\\"http://www.torn.com/profiles.php?XID=2307055\\\">St-Finn</a> filled one of the faction's Empty Blood Bag items.\"",
+                "timestamp": "1618183537"
+              },
+              {
+                "news": "\"<a href = \\\"http://www.torn.com/profiles.php?XID=2300097\\\">Giggin</a> filled one of the faction's Empty Blood Bag items.\"",
+                "timestamp": "1618179696"
+              },
+              {
+                "news": "\"<a href = \\\"http://www.torn.com/profiles.php?XID=2300097\\\">Giggin</a> filled one of the faction's Empty Blood Bag items.\"",
+                "timestamp": "1618179695"
+              },
+              {
+                "news": "\"<a href = \\\"http://www.torn.com/profiles.php?XID=2300097\\\">Giggin</a> filled one of the faction's Empty Blood Bag items.\"",
+                "timestamp": "1618179694"
+              },
             ],
           }
         };
@@ -325,7 +345,7 @@
 
       return $http({
         method: 'get',
-        url: fqdn + `/api/v1/history/faction/{{params.factionName}}/{{params.type}}`,
+        url: fqdn + `/api/v1/history/faction/${params.factionId}/${params.type}`,
         params: queryParams
       }).then(
         function fetchAuditLogsSuccess(response) {

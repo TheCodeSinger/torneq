@@ -129,46 +129,22 @@
           matNativeControl
           aria-label="Select type of data to audit."
           ng-model="$ctrl.filters.type">
-          <option value="mainnewsfull">Main News</option>
-          <option value="membershipnewsfull">Membership</option>
-          <option value="fundsnewsfull">Funds</option>
-          <option value="armorynewsfull">Armory</option>
-          <option value="attacknewsfull">Attacks</option>
-          <option value="crimenewsfull">Crimes</option>
+          <option value="mainnews">Main News</option>
+          <option value="membershipnews">Membership</option>
+          <option value="fundsnews">Funds</option>
+          <option value="armorynews">Armory</option>
+          <option value="attacknews">Attacks</option>
+          <option value="crimenews">Crimes</option>
         </select>
 
-
-        <div id="daterange" class="custom-select form-control d-inline ml-3 mb-1"
-          style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
-          <i class="fa fa-calendar"></i>&nbsp;
-          <span></span> <i class="fa fa-caret-down"></i>
-        </div>
-
-        <script type="text/javascript">
-        $(function() {
-          var start = moment().subtract(29, 'days');
-          var end = moment();
-
-          function cb(start, end) {
-            $('#daterange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-          }
-
-          $('#daterange').daterangepicker({
-            startDate: start,
-            endDate: end,
-            ranges: {
-              'Today': [moment(), moment()],
-              'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-              'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-              'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-              'This Month': [moment().startOf('month'), moment().endOf('month')],
-              'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-            }
-          }, cb);
-
-          cb(start, end);
-        });
-        </script>
+        <input date-range-picker
+          id="date-range"
+          name="daterange"
+          class="custom-select form-control d-inline ml-3 mb-1 date-picker"
+          type="text"
+          ng-model="$ctrl.dateRange"
+          options="$ctrl.opts"
+          required>
 
         <!-- Submit button -->
         <button class="btn btn-primary ml-3 mb-1 d-inline" type="submit" ng-disabled="$ctrl.fetchingAuditLogs">
