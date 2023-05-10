@@ -9,7 +9,7 @@ from . import models as kmodels
 import requests
 import json
 
-eqFactionIds = [9524, 10296]
+eqFactionIds = [27312, 525]
 
 @csrf_exempt
 @require_http_methods(['POST'])
