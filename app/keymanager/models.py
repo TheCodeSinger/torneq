@@ -29,7 +29,7 @@ class Account(models.Model):
     torn_id = models.CharField(max_length=16)
     torn_name = models.CharField(max_length=32, blank=True)
     api_key = models.CharField(max_length=64, primary_key=True)
-    api_ready = models.BooleanField(default=False)
+    api_ready = models.BooleanField(default=True)
     api_status = models.CharField(max_length=32, default='Untested', db_index=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)

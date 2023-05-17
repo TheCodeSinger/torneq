@@ -9,7 +9,21 @@ from . import models as kmodels
 import requests
 import json
 
-eqFactionIds = [27312, 525]
+#
+# Faction Allowlist
+#
+## EQ Factions
+# 27312 - Current EQ Main. Formerly SA One Punch.
+# 18569 - Second EQ Main. Formerly SA Igloo. Purchased in Jan 2022. Sold to ?
+#   525 - Ministry of Mayhem. Annexed Jan 2022.
+#  9524 - Original EQ Main (eq1). Sold to miro [1689701].
+# 10296 - Original Equilibrate (eq2). Formerly Kyoko's Bedroom. Sold to jijay [2625139].
+# 41803 - Pinky Unicorns. Healer4life's playground. Sold.
+#
+## Allied Factions
+#  2013 - SA Main.
+# 33458 - SA One Punch. SA RW Faction.
+eqFactionIds = [27312, 525, 2013, 33458]
 
 @csrf_exempt
 @require_http_methods(['POST'])

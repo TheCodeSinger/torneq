@@ -141,6 +141,7 @@ CORS_ORIGIN_WHITELIST = [
     'http://s02.n1029.com:1337',
     'http://tctools.club',
     'http://torneq.com',
+    'https://torneq.com',
 ]
 
 CELERY_RESULT_BACKEND = 'django-db'
